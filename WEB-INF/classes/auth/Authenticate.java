@@ -19,7 +19,7 @@ public class Authenticate extends HttpServlet {
     HttpServletResponse response) throws ServletException, IOException {
         Date date = new Date();
         System.out.printf("[Auth] Reading from \"%s\"\n",request.getContextPath());
-        System.out.printf("[Auth] \t path info \"%s\"\n",request.getPathInfo());
+        System.out.printf("[Auth] \t path info \"%s\"\n",request.getPathInfo().split("/")[1]);
         System.out.printf("[Auth] \t path translated \"%s\"\n",request.getPathTranslated());
     }
 
