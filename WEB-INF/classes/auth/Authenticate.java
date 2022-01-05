@@ -7,10 +7,20 @@ import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Scanner;
 import java.io.File;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-public class Authenticate {
+public class Authenticate extends HttpServlet {
     private Connection con;
     
+    protected void doGet(HttpServletRequest request,
+    HttpServletResponse response) throws ServletException, IOException {
+        Date date = new Date();
+        System.out.printf("[Auth] Reading from \"%s\"",request.getContextPath());
+    }
+
     public Boolean login (String url, String user, String a){
         try{
             Class.forName("org.mariadb.jdbc.Driver");
