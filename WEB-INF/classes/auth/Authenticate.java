@@ -18,9 +18,9 @@ public class Authenticate extends HttpServlet {
     protected void doGet(HttpServletRequest request,
     HttpServletResponse response) throws ServletException, IOException {
         Date date = new Date();
-        System.out.printf("[Auth] Reading from \"%s\"\n",request.getContextPath());
-        System.out.printf("[Auth] \t path info \"%s\"\n",request.getPathInfo().split("/")[1]);
-        System.out.printf("[Auth] \t path translated \"%s\"\n",request.getPathTranslated());
+        String auth_str = request.getPathInfo().split("/")[1];
+        
+        // check if the auth string matches anything
     }
 
     public Boolean login (String url, String user, String a){

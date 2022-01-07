@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!-- saved from url=(0083)https://pdm.pw/examples/servlets/servlet/SessionExample?dataname=hello&datavalue=hi -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <link rel='stylesheet' href='./resc/style.css' type="text/css">
+<title>PDM</title>
+
+  <style>
+    .inputClass2 {
+      max-height: 7vh;
+      border-radius: 5px;
+      resize: none;
+      word-wrap: break-word;
+    }
+
+    .inputClass2:focus {
+      outline: none;
+    }
+  </style>
+
+</head>
+<body bgcolor="white">
+
+<h3>PDM Registration</h3>
+<br>
+<p>
+</p>
+<form action="https://pdm.pw/auth/register" method="POST">
+User Name
+<input type="text" size="20" name="usrname" class="inputClass2">
+<br>
+Email
+<input type="text" size="20" name="usremail" class="inputClass2">
+<br>
+Password
+<input type="text" size="20" name="usrpw" class="inputClass2">
+<br>
+<input type="submit">
+</form>
+<p>GET based form:<br>
+</p><form action="https://pdm.pw/examples/servlets/servlet/SessionExample" method="GET">
+Name of Session Attribute:
+<input type="text" size="20" name="dataname">
+<br>
+Value of Session Attribute:
+<input type="text" size="20" name="datavalue">
+<br>
+<input type="submit">
+</form>
+<p><a href="https://pdm.pw/examples/servlets/servlet/SessionExample?dataname=foo&amp;datavalue=bar">URL encoded </a>
+
+
+</p></body></html>
