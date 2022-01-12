@@ -12,43 +12,70 @@ import java.io.File;
 
 public class DataStart {
 
-    // protected void doGet(HttpServletRequest request,
-    // HttpServletResponse response) {
+    public static ResultSet q_userinfo_reg ( String reg_key){
+        Date date = new Date();
+        // Preferences node = Preferences.userNodeForPackage(this.getClass());
+        try{
+            Class.forName("org.postgresql.Driver");
+        }
+        catch (Exception e){
+            System.out.println("postgresql driver not found.");
+        }
+        String url = "jdbc:postgresql://localhost:5432/pdm";
+        try{
+            Connection con = DriverManager.getConnection(
+                url, 
+                "pdmsecurity", 
+                "16a93646e026f05c4b497e14c921d6b9915263aaa64663039dba8f13181f15e3");
+            String query = "select name, email, creation from userinfo where register_key = ?";
+            PreparedStatement stat = con.prepareStatement(query);
+            stat.setString(1, reg_key);
 
-    //     //Testing send mail
-    //     // SendMail sm = new SendMail();
-    //     // sm.send_test();
-
-    //     Date date = new Date();
-    //     // Preferences node = Preferences.userNodeForPackage(this.getClass());
-    //     try{
-    //         Class.forName("org.postgresql.Driver");
-    //     }
-    //     catch (Exception e){
-    //         System.out.println("postgresql driver not found.");
-    //     }
-    //     String url = "jdbc:postgresql://localhost:5432/pdm";
-    //     try{
-    //         Connection con = DriverManager.getConnection(
-    //             url, 
-    //             "pdmsecurity", 
-    //             "16a93646e026f05c4b497e14c921d6b9915263aaa64663039dba8f13181f15e3");
-    //         String query = "INSERT INTO test_table(name, time, t1, t2) VALUES(?, ?, ?, ?)";
-    //         PreparedStatement stat = con.prepareStatement(query);
-    //         stat.setString(1, "test1");
-    //         stat.setString(2, date.toString());
-    //         stat.setString(3, "from test user pdmsecurity");
-    //         stat.setString(4, date.getTime()+"");
-    //         // ResultSet rs = stat.executeQuery();
-    //         stat.executeUpdate();
+            System.out.println("[web_notes storage] success query for db");
+            // ResultSet rs = stat.executeQuery();
+            return stat.executeQuery();
             
-    //         System.out.println("[web_notes storage] success test1 for db");
-    //     }
-    //     catch (Exception e) {
-    //         e.printStackTrace();
-    //         System.out.println("Opening connection unsuccessful!");
-    //     }
-    // }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Opening connection unsuccessful!");
+        }
+        return null;
+    }
+
+    /**
+     * Update the database for registration status
+     * */
+    public static void u_userinfo_reg ( String uemail){
+        Date date = new Date();
+        // Preferences node = Preferences.userNodeForPackage(this.getClass());
+        try{
+            Class.forName("org.postgresql.Driver");
+        }
+        catch (Exception e){
+            System.out.println("postgresql driver not found.");
+        }
+        String url = "jdbc:postgresql://localhost:5432/pdm";
+        try{
+            Connection con = DriverManager.getConnection(
+                url, 
+                "pdmsecurity", 
+                "16a93646e026f05c4b497e14c921d6b9915263aaa64663039dba8f13181f15e3");
+            String query = "update userinfo set registered = ? where email = ?;";
+            PreparedStatement stat = con.prepareStatement(query);
+            stat.setString(1, "1");
+            stat.setString(2, uemail);
+
+            System.out.println("[web_notes storage] update registration status for user ");
+            // ResultSet rs = stat.executeQuery();
+            stat.executeUpdate();
+            
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Opening connection unsuccessful!");
+        }
+    }
 
     public static void register_user (String uname, String umail, String upw, String prod, String reg_key){
         Date date = new Date();
@@ -65,7 +92,8 @@ public class DataStart {
                 url, 
                 "pdmsecurity", 
                 "16a93646e026f05c4b497e14c921d6b9915263aaa64663039dba8f13181f15e3");
-            String query = "INSERT INTO userinfo(name, spw, creation, production, email, register_key, logs) VALUES(?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO userinfo(name, spw, creation, product, email, register_key, logs) VALUES(?, ?, ?, ?, ?, ?, ?) ON CONFLICT (email) DO UPDATE SET register_key = ?;";
+            // String query = "INSERT INTO userinfo(name, spw, creation, product, email, register_key, logs) VALUES(?, ?, ?, ?, ?, ?, ?) ON CONFLICT (id) DO UPDATE SET txt = EXCLUDED.txt;";
             PreparedStatement stat = con.prepareStatement(query);
             stat.setString(1, uname);
             stat.setString(2, upw);
@@ -74,10 +102,11 @@ public class DataStart {
             stat.setString(5, umail);
             stat.setString(6, reg_key);
             stat.setString(7, "testing user, not production code...");
+            stat.setString(8, reg_key);
             // ResultSet rs = stat.executeQuery();
             stat.executeUpdate();
             
-            System.out.println("[web_notes storage] success test1 for db");
+            System.out.println("[web_notes storage] success registeration for db");
         }
         catch (Exception e) {
             e.printStackTrace();

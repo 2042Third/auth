@@ -1,4 +1,6 @@
 package auth;
+import util.*;
+import storage.*;
 import java.util.prefs.*;
 import java.net.URLDecoder;
 import java.sql.*;
@@ -15,88 +17,48 @@ import jakarta.servlet.http.HttpServletResponse;
 public class Authenticate extends HttpServlet {
     private Connection con;
     
+    private String auser="";
+    private String aemail="";
+    private String acreation="";
     protected void doGet(HttpServletRequest request,
     HttpServletResponse response) throws ServletException, IOException {
         Date date = new Date();
+        PrintWriter out = response.getWriter();
         String auth_str = request.getPathInfo().split("/")[1];
-        
+
+        System.out.println("[Authentication] user Auth \""+ auth_str+"\"");
+        if(check_reg_key(auth_str)){
+            Long ctime = Long.parseLong(acreation);
+            Date cdate = new java.util.Date(ctime*1000L);
+            System.out.println("[Authentication] New User registration sucess for \""+auser+"\" email \""+ aemail+"\" created: "+cdate.toString());
+            
+            DataStart.u_userinfo_reg(aemail);
+            out.println(EmbedHTML.plain("/auth","Registration Successful!"));
+        }
+        else {
+            System.out.println("[Authentication] New user Auth unknown received ");
+            out.println(EmbedHTML.plain("/auth","Registration Unsuccessful"));
+
+        }
         // check if the auth string matches anything
     }
 
-    public Boolean login (String url, String user, String a){
+    public Boolean check_reg_key(String reg_key){
+        ResultSet rs = DataStart.q_userinfo_reg(reg_key);
+        Boolean rt = false;
         try{
-            Class.forName("org.mariadb.jdbc.Driver");
+            while (rs.next()){
+                rt = true;
+                auser = rs.getString("name");
+                aemail = rs.getString("email");
+                acreation = rs.getString("creation");
+            }
         }
         catch (Exception e){
-            System.out.println("mariadb driver not found.");
+            System.out.println("[Authentication] SQL no result in query or failure happened ");
         }
-        if (con!=null)
-            logout();
-        try {
-            con = DriverManager.getConnection(
-                        url, 
-                        user, 
-                        a
-                    );
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("[file tracker storage] login failure");
-            return false;
-        }
-        System.out.println("[file tracker storage] login success");
-        return true;
+        return rt;
     }
 
-    public Boolean exc_emplace_5 (String query, String a1,String a2,String a3,String a4,String a5){
-        try { 
-            PreparedStatement stat = con.prepareStatement(query);
-            stat.setString(1, a1);
-            stat.setString(2, a2);
-            stat.setString(3, a3);
-            stat.setString(4, a4);
-            stat.setString(5, a5);
-            stat.executeQuery();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("[file tracker storage] query failure \""+query+"\"");
-            return false;
-        }
-        
-        System.out.println("[file tracker storage] query sucess \""+query+"\"");
-        return true;
-    }
 
-    private Boolean exc (String a) {
-        try{
-            PreparedStatement stat = con.prepareStatement(a);
-            ResultSet rs = stat.executeQuery();
-            System.out.println("[file tracker storage] query excuted \""+a+"\"");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("[file tracker storage] query failure \""+a+"\"");
-            return false;
-        }
-        
-        return true;
-    }
-
-    public Boolean logout (){
-        if (con != null) {
-          try {
-            con.close();
-          }
-          catch (SQLException ex) {
-            for (Throwable t : ex)
-              System.out.println(t.getMessage());
-            System.out.println("[file tracker storage] Closing connection unsuccessful!");
-            return false;
-          
-          }
-          return true;
-        }
-        return false;
-    }
 }

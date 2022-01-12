@@ -11,11 +11,18 @@ import java.util.*;
 // import javax.mail.internet.MimeMessage;
 // import javax.mail.Authenticator;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import jakarta.activation.DataSource;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.PasswordAuthentication;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.mail.Session;
+import jakarta.servlet.ServletContext;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -38,7 +45,7 @@ public class SendMail {
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.socketFactory.fallback", "true");
         // props.put("mail.smtp.ssl.enable", "true");
-        props.put("mail.debug", "true");
+        props.put("mail.debug", "false");
         Authenticator auth = new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(username, password);
@@ -68,4 +75,25 @@ public class SendMail {
         }
         return 1;
     }
+    public int send_reg (String email, String uname, String reg_key, String mail_loc) {
+        try {
+            MimeMessage msg = new MimeMessage(session);
+            msg.setFrom(new InternetAddress("yangyimike@outlook.com"));
+            InternetAddress[] address = {new InternetAddress(email)};
+            msg.setRecipients(Message.RecipientType.TO, address);
+            msg.setSubject("PDM Registration Link");
+            // msg.addHeader("x-cloudmta-class", "standard");
+            // msg.addHeader("x-cloudmta-tags", "demo, example");
+            msg.setContent(EmbedHTML.email( "/auth",uname, reg_key,reg_key), "text/html");
+
+            Transport.send(msg);
+
+            System.out.println("[ Send Mail ] Message Sent.");
+        } catch (jakarta.mail.MessagingException ex) {
+            System.out.println("[ Send Mail ] Send Email Failure.");
+            throw new RuntimeException(ex);
+        }
+        return 1;
+    }
+
 }
