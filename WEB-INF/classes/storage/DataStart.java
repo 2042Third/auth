@@ -42,6 +42,37 @@ public class DataStart {
         }
         return null;
     }
+    public static ResultSet q_userinfo_login ( String uemail, String upass){
+        Date date = new Date();
+        // Preferences node = Preferences.userNodeForPackage(this.getClass());
+        try{
+            Class.forName("org.postgresql.Driver");
+        }
+        catch (Exception e){
+            System.out.println("postgresql driver not found.");
+        }
+        String url = "jdbc:postgresql://localhost:5432/pdm";
+        try{
+            Connection con = DriverManager.getConnection(
+                url, 
+                "pdmsecurity", 
+                "16a93646e026f05c4b497e14c921d6b9915263aaa64663039dba8f13181f15e3");
+            String query = "select name, email, creation from userinfo where email = ? and spw = ?;";
+            PreparedStatement stat = con.prepareStatement(query);
+            stat.setString(1, uemail);
+            stat.setString(2, upass);
+
+            System.out.println("[web_notes storage] (login) success query for db");
+            // ResultSet rs = stat.executeQuery();
+            return stat.executeQuery();
+            
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Opening connection unsuccessful!");
+        }
+        return null;
+    }
 
     /**
      * Update the database for registration status

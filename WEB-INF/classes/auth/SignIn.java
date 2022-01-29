@@ -17,6 +17,9 @@ import java.nio.file.Path;
 import java.util.Random;
 
 public class SignIn extends HttpServlet {
+  private String auser="";
+  private String aemail="";
+  private String acreation="";
 
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
@@ -42,9 +45,28 @@ public class SignIn extends HttpServlet {
       System.out.println("");
     }
 
+    check_user_login(upw, umail);
+
     System.out.println("[Auth Register] "+date.getTime()+"");
-    System.out.printf("[Auth Register] User sign in: email \"%s\", password \"%s\"\n\n", umail, upw);
+    System.out.printf("[Auth Register] User sign in: email \"%s\", creation date \"%s\", user name : \"%s\"\n\n", aemail, acreation, auser);
 
   }
+
+  public Boolean check_user_login(String uemail,String upass){
+        ResultSet rs = DataStart.q_userinfo_reg(uemail, upass);
+        Boolean rt = false;
+        try{
+            while (rs.next()){
+                rt = true;
+                auser = rs.getString("name");
+                aemail = rs.getString("email");
+                acreation = rs.getString("creation");
+            }
+        }
+        catch (Exception e){
+            System.out.println("[Authentication] SQL no result in query or failure happened ");
+        }
+        return rt;
+    }
 
 }
