@@ -2,12 +2,17 @@ package auth;
 
 import util.*;
 import storage.*;
-import java.io.*;
-import java.util.*;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-
-import jakarta.servlet.ServletContext;
+import java.util.prefs.*;
+import java.util.Map;
+import java.net.URLDecoder;
+import java.sql.*;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
+import java.util.Scanner;
+import java.io.File;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,40 +25,65 @@ public class SignIn extends HttpServlet {
   private String auser="";
   private String aemail="";
   private String acreation="";
+  private String areg_status="";
+  private String asession="session-placeholder";
+  private  PrintWriter out;
 
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
+
+    Map<String,Object> json_data;
+    byte[] array = new byte[1024];
+    JSONParse parser=new JSONParse();
+
     response.setContentType("text/html");
-    PrintWriter out = response.getWriter();
-
-    HttpSession session = request.getSession(true);
-
+    out = response.getWriter();
     // PDM part
-    // read from template
-
 
     Date date = new Date();
 
-    // String uname = request.getParameter("uname");
-    String upw = request.getParameter("upw");
-    String umail = request.getParameter("umail");
+    System.out.println("Data read from the file: ");
+
+    // Convert byte array into string
+    String data = read_stream(request.getInputStream());
+    System.out.println(data);
+
+    json_data = parser.parse(data);
+
+    String upw = (String)json_data.get("upw");
+    String umail = (String)json_data.get("umail");
+    System.out.println("[Auth ] "+date.getTime()+"");
+    System.out.printf("[Auth ] User try sign in: email \"%s\"\n\n", umail);
 
     if(upw.equals("") || umail.equals("") ||upw.equals("test") || umail.equals("test")){
       System.out.println("[Auth] "+date.getTime()+"");
       System.out.println("[Auth] User sign in failue: no email or password.");
-      System.out.println("[Auth] User sign in failue, session id: "+request.getSession());
       System.out.println("");
     }
 
-    check_user_login(upw, umail);
+    check_user_login(umail,upw );
 
-    System.out.println("[Auth Register] "+date.getTime()+"");
-    System.out.printf("[Auth Register] User sign in: email \"%s\", creation date \"%s\", user name : \"%s\"\n\n", aemail, acreation, auser);
+    System.out.println("[Auth ] "+date.getTime()+"");
+    if(areg_status.equals("1")){
+      System.out.printf("[Auth ] Registered user \"%s\" sign in\n", auser);
+      respond_user();
+    }
+    else{
+      System.out.printf("[Auth ] Unregistered user \"%s\" sign in\n", auser);
+    }
+    System.out.printf("[Auth ] User sign in: email \"%s\", creation date \"%s\", user name : \"%s\"\n\n", aemail, acreation, auser);
 
   }
 
-  public Boolean check_user_login(String uemail,String upass){
-        ResultSet rs = DataStart.q_userinfo_reg(uemail, upass);
+  private Boolean respond_user(){
+    JSONParse res = new JSONParse();
+    String res_str = res.json_request("login", "server", auser, acreation,aemail,asession,"Login successful!");
+    out.print(res_str);
+    return true;
+  }
+
+  private Boolean check_user_login(String uemail,String upass){
+        ResultSet rs = DataStart.q_userinfo_login(uemail, upass);
         Boolean rt = false;
         try{
             while (rs.next()){
@@ -61,6 +91,7 @@ public class SignIn extends HttpServlet {
                 auser = rs.getString("name");
                 aemail = rs.getString("email");
                 acreation = rs.getString("creation");
+                areg_status = rs.getString("registered");
             }
         }
         catch (Exception e){
@@ -68,5 +99,15 @@ public class SignIn extends HttpServlet {
         }
         return rt;
     }
-
+    /**
+     * Gets the user name of the packet
+     * */
+    private String read_stream(InputStream stream)throws IOException{
+        String _str = "";
+        int i;
+        while((i = stream.read())!=-1) {
+            _str = _str+(char)i;
+        }
+        return _str;
+    }
 }

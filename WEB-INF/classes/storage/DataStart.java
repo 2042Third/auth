@@ -57,7 +57,7 @@ public class DataStart {
                 url, 
                 "pdmsecurity", 
                 "16a93646e026f05c4b497e14c921d6b9915263aaa64663039dba8f13181f15e3");
-            String query = "select name, email, creation from userinfo where email = ? and spw = ?;";
+            String query = "select name, email, creation, registered from userinfo where email = ? and spw = ?;";
             PreparedStatement stat = con.prepareStatement(query);
             stat.setString(1, uemail);
             stat.setString(2, upass);

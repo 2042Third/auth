@@ -59,7 +59,7 @@ public class SignUp extends HttpServlet {
     String bad_dir = servletContext.getRealPath(servletContext.getContextPath());
     bad_dir = bad_dir.substring(0, bad_dir.lastIndexOf("/"));
     sm.send_reg(umail, uname, "https://pdm.pw/auth/try/"+reg_key,bad_dir+"/resc/email_link.html");
-    out.println(EmbedHTML.plain("/auth","请点击邮箱 "+umail+" 中的链接来完成注册。"));
+    out.println(EmbedHTML.plain("/auth","click the link in email \""+umail+"\" to finish the registration "));
 
     // print session contents
 

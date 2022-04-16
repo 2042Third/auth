@@ -5,6 +5,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 import org.json.simple.parser.JSONParser;
 import java.util.*;
+import java.io.*;
 import java.io.StringWriter;
 import java.io.IOException;
 
@@ -23,6 +24,7 @@ public class JSONParse {
       obj = parser.parse(a);
     }
     catch (ParseException e){
+      System.out.println(e);  
       System.out.println("Jason Parse failure!");
       System.out.println(a);
     }
@@ -113,6 +115,7 @@ public class JSONParse {
    * @param v1      data 
    * @param v2      data 
    * @param v3      data 
+   * @param v4      data 
    * */
   public String json_request (String type, String sender, String recv, String v1, String v2, String v3, String v4){
     create_obj();

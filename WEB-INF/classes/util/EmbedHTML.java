@@ -17,7 +17,6 @@ public class EmbedHTML {
 
   public static String plain( String cler, String a){
     return String.format(read_into_string("/resc/check_email.html", cler), a);
-    // String.format(read_into_string("/resc/check_email.html"), "请点击邮箱 "+umail+" 中的链接来完成注册。")
   }
   public static String email(String cler, String a,String b,String c){
     return String.format(read_into_string("/resc/email_link.html", cler), a, b,c);
