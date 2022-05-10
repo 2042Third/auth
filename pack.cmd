@@ -1,1 +1,1 @@
-jar -cvf ../auth.war *
+jar cvf ../auth.war WEB-INF/* static/* dist/* js/* META-INF/* 
