@@ -57,12 +57,13 @@ public class DataStart {
                 url, 
                 "pdmsecurity", 
                 "16a93646e026f05c4b497e14c921d6b9915263aaa64663039dba8f13181f15e3");
+            System.out.printf("[postgresql] checking signin for email: %s, pssword: %s\n",uemail, upass);
             String query = "select name, email, creation, registered from userinfo where email = ? and spw = ?;";
             PreparedStatement stat = con.prepareStatement(query);
             stat.setString(1, uemail);
             stat.setString(2, upass);
 
-            System.out.println("[web_notes storage] (login) success query for db");
+            // System.out.println("[web_notes storage] (login) success query for db");
             // ResultSet rs = stat.executeQuery();
             return stat.executeQuery();
             
@@ -108,6 +109,36 @@ public class DataStart {
         }
     }
 
+    /**
+     * Update the database for registration status
+     * */
+    public static ResultSet u_userinfo_check ( String uemail){
+        Date date = new Date();
+        // Preferences node = Preferences.userNodeForPackage(this.getClass());
+        try{
+            Class.forName("org.postgresql.Driver");
+        }
+        catch (Exception e){
+            System.out.println("postgresql driver not found.");
+        }
+        String url = "jdbc:postgresql://localhost:5432/pdm";
+        try{
+            Connection con = DriverManager.getConnection(
+                url, 
+                "pdmsecurity", 
+                "16a93646e026f05c4b497e14c921d6b9915263aaa64663039dba8f13181f15e3");
+            System.out.printf("[postgresql] checking signin for email: %s\n",uemail);
+            String query = "select 1 from userinfo where email = ?;";
+            PreparedStatement stat = con.prepareStatement(query);
+            stat.setString(1, uemail);
+            return stat.executeQuery();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Opening connection unsuccessful!");
+        }
+        return null;
+    }
     public static void register_user (String uname, String umail, String upw, String prod, String reg_key){
         Date date = new Date();
         // Preferences node = Preferences.userNodeForPackage(this.getClass());

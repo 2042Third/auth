@@ -61,23 +61,36 @@ public class SignIn extends HttpServlet {
       System.out.println("");
     }
 
-    check_user_login(umail,upw );
-
-    System.out.println("[Auth ] "+date.getTime()+"");
-    if(areg_status.equals("1")){
-      System.out.printf("[Auth ] Registered user \"%s\" sign in\n", auser);
-      respond_user();
+    if(check_user_login(umail,upw )){
+      System.out.println("[Auth ] "+date.getTime()+"");
+      if(areg_status.equals("1")){
+        System.out.printf("[Auth ] Registered user \"%s\" sign in\n", auser);
+        respond_user();
+      }
+      else{
+        System.out.printf("[Auth ] Unregistered user \"%s\" sign in\n", auser);
+      }
+      System.out.printf("[Auth ] User sign in: email \"%s\", creation date \"%s\", user name : \"%s\"\n\n", aemail, acreation, auser);
     }
     else{
-      System.out.printf("[Auth ] Unregistered user \"%s\" sign in\n", auser);
+      System.out.printf("[Auth ] Failure User sign in: email \"%s\", pswd \"%s\"\n\n",umail,upw);
+      respond_user_fail();
     }
-    System.out.printf("[Auth ] User sign in: email \"%s\", creation date \"%s\", user name : \"%s\"\n\n", aemail, acreation, auser);
+
+    
 
   }
 
   private Boolean respond_user(){
     JSONParse res = new JSONParse();
     String res_str = res.json_request("login", "server", auser, acreation,aemail,asession,"Login successful!");
+    out.print(res_str);
+    return true;
+  }
+
+  private Boolean respond_user_fail(){
+    JSONParse res = new JSONParse();
+    String res_str = res.json_request("login", "server", "","","","","Login failed!");
     out.print(res_str);
     return true;
   }
@@ -92,6 +105,8 @@ public class SignIn extends HttpServlet {
                 aemail = rs.getString("email");
                 acreation = rs.getString("creation");
                 areg_status = rs.getString("registered");
+                System.out.printf("[Authentication] query result: %s, %s, %s, %s\n",auser,aemail,acreation,areg_status);
+
             }
         }
         catch (Exception e){

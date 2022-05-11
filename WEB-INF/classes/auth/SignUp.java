@@ -4,9 +4,11 @@ import util.*;
 import storage.*;
 import java.io.*;
 import java.util.*;
+import java.sql.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 
+import java.util.Date;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,26 +19,26 @@ import java.nio.file.Path;
 import java.util.Random;
 
 public class SignUp extends HttpServlet {
-
+  private String uname="";
+  private String upw="";
+  private String umail="";
+  private String from="";
+  private PrintWriter out;
+  private HttpSession session ;
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
     response.setContentType("text/html");
-    PrintWriter out = response.getWriter();
-
-    HttpSession session = request.getSession(true);
+    out = response.getWriter();
+    session = request.getSession(true);
 
     // PDM part
     // read from template
-
-
     Date date = new Date();
-
-    String uname = request.getParameter("uname");
-    String upw = request.getParameter("upw");
-    String umail = request.getParameter("umail");
-
+    uname = request.getParameter("uname");
+    upw   = request.getParameter("upw");
+    umail = request.getParameter("umail");
+    from  = request.getParameter("type");
     System.out.printf("[Auth Register] User register: name \"%s\", email \"%s\", password \"%s\"\n", uname, umail, upw);
-
     SHA3 s3 = new SHA3();
     String intermediate = ""+Math.random();
     intermediate += date.getTime()+"";
@@ -50,25 +52,56 @@ public class SignUp extends HttpServlet {
       System.out.println("[Auth Register] hash function for registration key failed.");
       return;
     }
-
-    DataStart.register_user(uname, umail, upw, "pdm static web", reg_key);
-
-    SendMail sm = new SendMail();
-
-    final ServletContext servletContext = getServletContext();
-    String bad_dir = servletContext.getRealPath(servletContext.getContextPath());
-    bad_dir = bad_dir.substring(0, bad_dir.lastIndexOf("/"));
-    sm.send_reg(umail, uname, "https://pdm.pw/auth/try/"+reg_key,bad_dir+"/resc/email_link.html");
-    out.println(EmbedHTML.plain("/auth","click the link in email \""+umail+"\" to finish the registration "));
-
-    // print session contents
-
-    // Enumeration e = session.getAttributeNames();
-    // while (e.hasMoreElements()) {
-    //   String name = (String) e.nextElement();
-    //   String value = session.getAttribute(name).toString();
-    //   // out.println(name + " = " + value);
-    // }
+    if(check_user_exist(umail)){
+      respond_user_fail();
+    }
+    else {
+      respond_user();      
+      DataStart.register_user(uname, umail, upw, "pdm static web", reg_key);
+      SendMail sm = new SendMail();
+      final ServletContext servletContext = getServletContext();
+      String bad_dir = servletContext.getRealPath(servletContext.getContextPath());
+      bad_dir = bad_dir.substring(0, bad_dir.lastIndexOf("/"));
+      sm.send_reg(umail, uname, "https://pdm.pw/auth/try/"+reg_key,bad_dir+"/resc/email_link.html");
+    }
+    return;
+    // out.println(EmbedHTML.plain("/auth","click the link in email \""+umail+"\" to finish the registration "));
   }
 
+  private Boolean respond_user(){
+    JSONParse res = new JSONParse();
+    String res_str = res.json_request("signup", "server", uname, "",umail,"","success");
+    out.print(res_str);
+    return true;
+  }
+  private Boolean respond_user_fail(){
+    JSONParse res = new JSONParse();
+    String res_str = res.json_request("signup", "server", "", "","","","fail");
+    out.print(res_str);
+    return true;
+  }
+
+  private Boolean check_user_exist(String uemail){
+    ResultSet rs = DataStart.u_userinfo_check(uemail);
+    Boolean rt = false;
+    try{
+      while (rs.next()){
+        rt = true;
+        System.out.printf("[Authentication] query result: user exists\n");
+      }
+    }
+    catch (Exception e){
+      System.out.println("[Authentication] SQL no result in query or failure happened ");
+    }
+    return rt;
+  }
+
+  private boolean is_dynamic_web (){
+    if(this.from.equals("pdm web")){
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 }
