@@ -25,19 +25,30 @@ public class SignUp extends HttpServlet {
   private String from="";
   private PrintWriter out;
   private HttpSession session ;
+
+
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
+
+
+    Map<String,Object> json_data;
+    byte[] array = new byte[1024];
+    JSONParse parser=new JSONParse();
+
     response.setContentType("text/html");
     out = response.getWriter();
     session = request.getSession(true);
 
-    // PDM part
-    // read from template
+    String data = read_stream(request.getInputStream());
+    System.out.println(data);
+
+    json_data = parser.parse(data);
+
     Date date = new Date();
-    uname = request.getParameter("uname");
-    upw   = request.getParameter("upw");
-    umail = request.getParameter("umail");
-    from  = request.getParameter("type");
+    uname = (String)json_data.get("uname");
+    upw   = (String)json_data.get("upw");
+    umail = (String)json_data.get("umail");
+    from  = (String)json_data.get("type");
     System.out.printf("[Auth Register] User register: name \"%s\", email \"%s\", password \"%s\"\n", uname, umail, upw);
     SHA3 s3 = new SHA3();
     String intermediate = ""+Math.random();
@@ -103,5 +114,17 @@ public class SignUp extends HttpServlet {
     else {
       return false;
     }
+  }
+
+  /**
+   * Gets the user name of the packet
+   * */
+  private String read_stream(InputStream stream)throws IOException{
+      String _str = "";
+      int i;
+      while((i = stream.read())!=-1) {
+          _str = _str+(char)i;
+      }
+      return _str;
   }
 }

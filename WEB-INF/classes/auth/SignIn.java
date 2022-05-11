@@ -114,9 +114,7 @@ public class SignIn extends HttpServlet {
         }
         return rt;
     }
-    /**
-     * Gets the user name of the packet
-     * */
+    
     private String read_stream(InputStream stream)throws IOException{
         String _str = "";
         int i;
