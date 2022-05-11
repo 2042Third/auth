@@ -128,7 +128,7 @@ public class DataStart {
                 "pdmsecurity", 
                 "16a93646e026f05c4b497e14c921d6b9915263aaa64663039dba8f13181f15e3");
             System.out.printf("[postgresql] checking signin for email: %s\n",uemail);
-            String query = "select 1 from userinfo where email = ?;";
+            String query = "select 1 from userinfo where email = lower(?);";
             PreparedStatement stat = con.prepareStatement(query);
             stat.setString(1, uemail);
             return stat.executeQuery();
@@ -154,7 +154,7 @@ public class DataStart {
                 url, 
                 "pdmsecurity", 
                 "16a93646e026f05c4b497e14c921d6b9915263aaa64663039dba8f13181f15e3");
-            String query = "INSERT INTO userinfo(name, spw, creation, product, email, register_key, logs) VALUES(?, ?, ?, ?, ?, ?, ?) ON CONFLICT (email) DO UPDATE SET register_key = ?;";
+            String query = "INSERT INTO userinfo(name, spw, creation, product, email, register_key, logs) VALUES(?, ?, ?, ?, lower(?), ?, ?) ON CONFLICT (email) DO UPDATE SET register_key = ?;";
             // String query = "INSERT INTO userinfo(name, spw, creation, product, email, register_key, logs) VALUES(?, ?, ?, ?, ?, ?, ?) ON CONFLICT (id) DO UPDATE SET txt = EXCLUDED.txt;";
             PreparedStatement stat = con.prepareStatement(query);
             stat.setString(1, uname);
