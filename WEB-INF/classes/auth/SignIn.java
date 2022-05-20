@@ -83,14 +83,14 @@ public class SignIn extends HttpServlet {
 
   private Boolean respond_user(){
     JSONParse res = new JSONParse();
-    String res_str = res.json_request("login", "server", auser, acreation,aemail,asession,"Login successful!");
+    String res_str = res.json_request("login", "server", auser, acreation,aemail,asession,"success");
     out.print(res_str);
     return true;
   }
 
   private Boolean respond_user_fail(){
     JSONParse res = new JSONParse();
-    String res_str = res.json_request("login", "server", "","","","","Login failed!");
+    String res_str = res.json_request("login", "server", "","","","","fail");
     out.print(res_str);
     return true;
   }

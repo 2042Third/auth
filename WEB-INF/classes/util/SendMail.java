@@ -32,7 +32,7 @@ public class SendMail {
     // protected String hostname = "smtp-mail.outlook.com"; 
     protected String hostname = "outlook.office365.com";
     protected String username = "mikeyiyang@outlook.com"; 
-    protected String password = "Zsjb6ZJ67Bns"; 
+    protected String password = "4z5Q3ooe2WKv"; 
     protected Session session = null;
     public SendMail() {
         Properties props = new Properties();

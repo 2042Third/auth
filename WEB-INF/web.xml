@@ -27,6 +27,7 @@
   <servlet-name>SignUp</servlet-name>
   <url-pattern>/register</url-pattern>
 </servlet-mapping>
+
 <servlet>
   <description></description>
   <display-name>SignIn</display-name>
@@ -36,6 +37,17 @@
 <servlet-mapping>
   <servlet-name>SignIn</servlet-name>
   <url-pattern>/signin</url-pattern>
+</servlet-mapping>
+
+<servlet>
+  <description></description>
+  <display-name>Notes</display-name>
+  <servlet-name>Notes</servlet-name>
+  <servlet-class>auth.Notes</servlet-class>
+</servlet>
+<servlet-mapping>
+  <servlet-name>Notes</servlet-name>
+  <url-pattern>/notes</url-pattern>
 </servlet-mapping>
 
 

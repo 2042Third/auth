@@ -93,7 +93,7 @@ public class SignUp extends HttpServlet {
   }
 
   private Boolean check_user_exist(String uemail){
-    ResultSet rs = DataStart.u_userinfo_check(uemail);
+    ResultSet rs = DataStart.q_userinfo_check(uemail);
     Boolean rt = false;
     try{
       while (rs.next()){
