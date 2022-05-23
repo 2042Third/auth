@@ -1,39 +1,22 @@
 package util;
+
 import java.util.*;
 
-// import javax.activation.DataSource;
-// import javax.mail.Message;
-// import javax.mail.MessagingException;
-// import javax.mail.PasswordAuthentication;
-// import javax.mail.Session;
-// import javax.mail.Transport;
-// import javax.mail.internet.InternetAddress;
-// import javax.mail.internet.MimeMessage;
-// import javax.mail.Authenticator;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import jakarta.activation.DataSource;
 import jakarta.mail.Message;
-import jakarta.mail.MessagingException;
 import jakarta.mail.PasswordAuthentication;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.mail.Session;
-import jakarta.servlet.ServletContext;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.Authenticator;
 
 public class SendMail {
-    // protected String hostname = "smtp-mail.outlook.com"; 
+    // protected String hostname = "smtp-mail.outlook.com";
     protected String hostname = "outlook.office365.com";
-    protected String username = "mikeyiyang@outlook.com"; 
-    protected String password = "4z5Q3ooe2WKv"; 
+    protected String username = "mikeyiyang@outlook.com";
+    protected String password = "4z5Q3ooe2WKv";
     protected Session session = null;
+
     public SendMail() {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -55,11 +38,11 @@ public class SendMail {
         session = Session.getInstance(props, auth);
     }
 
-    public int send_test () {
+    public int send_test() {
         try {
             MimeMessage msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress("mikeyiyang@outlook.com"));
-            InternetAddress[] address = {new InternetAddress("18604713262@163.com")};
+            InternetAddress[] address = { new InternetAddress("18604713262@163.com") };
             msg.setRecipients(Message.RecipientType.TO, address);
             msg.setSubject("Jakarta Mail APIs Test");
             msg.addHeader("x-cloudmta-class", "standard");
@@ -75,16 +58,17 @@ public class SendMail {
         }
         return 1;
     }
-    public int send_reg (String email, String uname, String reg_key, String mail_loc) {
+
+    public int send_reg(String email, String uname, String reg_key, String mail_loc) {
         try {
             MimeMessage msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress("mikeyiyang@outlook.com"));
-            InternetAddress[] address = {new InternetAddress(email)};
+            InternetAddress[] address = { new InternetAddress(email) };
             msg.setRecipients(Message.RecipientType.TO, address);
             msg.setSubject("PDM Registration Link");
             // msg.addHeader("x-cloudmta-class", "standard");
             // msg.addHeader("x-cloudmta-tags", "demo, example");
-            msg.setContent(EmbedHTML.email( "/auth",uname, reg_key,reg_key), "text/html");
+            msg.setContent(EmbedHTML.email("/auth", uname, reg_key, reg_key), "text/html");
 
             Transport.send(msg);
 

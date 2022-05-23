@@ -1,14 +1,10 @@
 package auth;
 import util.*;
 import storage.*;
-import java.util.prefs.*;
-import java.net.URLDecoder;
 import java.sql.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
-import java.util.Scanner;
-import java.io.File;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
