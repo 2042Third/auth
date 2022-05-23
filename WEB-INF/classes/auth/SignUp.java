@@ -6,7 +6,6 @@ import java.io.*;
 import java.util.*;
 import java.sql.*;
 import jakarta.servlet.*;
-import jakarta.servlet.http.*;
 
 import java.util.Date;
 import jakarta.servlet.ServletContext;
@@ -14,9 +13,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Random;
 
 public class SignUp extends HttpServlet {
   private String uname = "";
@@ -24,17 +20,15 @@ public class SignUp extends HttpServlet {
   private String umail = "";
   private String from = "";
   private PrintWriter out;
-  private HttpSession session;
 
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
 
     Map<String, Object> json_data;
-    byte[] array = new byte[1024];
 
     response.setContentType("text/html");
     out = response.getWriter();
-    session = request.getSession(true);
+    request.getSession(true);
 
     String data = read_stream(request.getInputStream());
     System.out.println(data);
@@ -60,7 +54,7 @@ public class SignUp extends HttpServlet {
     }
     if (check_user_exist(umail)) {
       respond_user_fail();
-      
+
     } else {
       respond_user();
       DataStart.register_user(uname, umail, upw, "pdm static web", reg_key);
@@ -76,15 +70,13 @@ public class SignUp extends HttpServlet {
   }
 
   private Boolean respond_user() {
-    JSONParse res = new JSONParse();
-    String res_str = res.json_request("signup", "server", uname, "", umail, "", "success");
+    String res_str = JSONParse.json_request("signup", "server", uname, "", umail, "", "success");
     out.print(res_str);
     return true;
   }
 
   private Boolean respond_user_fail() {
-    JSONParse res = new JSONParse();
-    String res_str = res.json_request("signup", "server", "", "", "", "", "fail");
+    String res_str = JSONParse.json_request("signup", "server", "", "", "", "", "fail");
     out.print(res_str);
     return true;
   }

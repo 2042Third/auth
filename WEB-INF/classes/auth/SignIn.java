@@ -2,24 +2,16 @@ package auth;
 
 import util.*;
 import storage.*;
-import java.util.prefs.*;
 import java.util.Map;
-import java.net.URLDecoder;
 import java.sql.*;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
-import java.util.Scanner;
-import java.io.File;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Random;
 
 public class SignIn extends HttpServlet {
   private String auser = "";
@@ -33,7 +25,6 @@ public class SignIn extends HttpServlet {
       throws IOException, ServletException {
 
     Map<String, Object> json_data;
-    JSONParse parser = new JSONParse();
 
     response.setContentType("text/html");
     out = response.getWriter();
@@ -47,7 +38,7 @@ public class SignIn extends HttpServlet {
     String data = read_stream(request.getInputStream());
     System.out.println(data);
 
-    json_data = parser.parse(data);
+    json_data = JSONParse.parse(data);
 
     String upw = (String) json_data.get("upw");
     String umail = (String) json_data.get("umail");
@@ -78,15 +69,13 @@ public class SignIn extends HttpServlet {
   }
 
   private Boolean respond_user() {
-    JSONParse res = new JSONParse();
-    String res_str = res.json_request("login", "server", auser, acreation, aemail, asession, "success");
+    String res_str = JSONParse.json_request("login", "server", auser, acreation, aemail, asession, "success");
     out.print(res_str);
     return true;
   }
 
   private Boolean respond_user_fail() {
-    JSONParse res = new JSONParse();
-    String res_str = res.json_request("login", "server", "", "", "", "", "fail");
+    String res_str = JSONParse.json_request("login", "server", "", "", "", "", "fail");
     out.print(res_str);
     return true;
   }
