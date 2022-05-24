@@ -6,11 +6,11 @@ import util.SHA3;
 
 public class Codes {
   /**
-   * Returns a randomly generated 128-bit hash
+   * Returns a randomly generated 256-bit hash
    * 
    * @return randomly generated hash
    */
-  public static String byte_rand128() throws IllegalArgumentException {
+  public static String byte_rand256() throws IllegalArgumentException {
     Date date = new Date();
     String intermediate = "" + Math.random();
     intermediate += date.getTime() + "";
@@ -23,13 +23,13 @@ public class Codes {
   }
 
   /**
-   * Returns a randomly generated 128-bit hash, with additional info
+   * Returns a randomly generated 256-bit hash, with additional info
    * 
    * @param info additional information that can be used to further target the
    *             generated code
    * @return randomly generated hash
    */
-  public static String byte_rand128(String info) throws IllegalArgumentException {
+  public static String byte_rand256(String info) throws IllegalArgumentException {
     Date date = new Date();
     String intermediate = "" + Math.random();
     intermediate += date.getTime() + "";
@@ -62,4 +62,16 @@ public class Codes {
       return "";
     }
   }
+
+  /**
+   * Returns a randomly generated 256-bit hash's first 8 hex characters
+   * 
+   * @param info additional information that can be used to further target the
+   *             generated code
+   * @return randomly generated hash
+   */
+  public static String byte_rand_8(String info) throws IllegalArgumentException {
+    return Codes.byte_rand256(info).substring(0, 8);
+  }
+
 }

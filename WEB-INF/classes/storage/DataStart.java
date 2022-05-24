@@ -69,7 +69,7 @@ public class DataStart {
           dbstorel,
           dbstoren,
           dbstorep);
-      System.out.printf("[postgresql] checking signin for email: %s, pssword: %s\n", uemail, upass);
+      System.out.printf("[postgresql] checking signin for email: %s and input pssword\n", uemail);
       String query = Queries.q_userinfo_login;
       PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, uemail);

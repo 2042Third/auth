@@ -7,7 +7,6 @@ import java.util.*;
 import java.sql.*;
 import jakarta.servlet.*;
 
-import java.util.Date;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,12 +38,12 @@ public class SignUp extends HttpServlet {
     upw = (String) json_data.get("upw");
     umail = (String) json_data.get("umail");
     from = (String) json_data.get("type");
-    System.out.printf("[Auth Register] User register: name \"%s\", email \"%s\", password \"%s\"\n", uname, umail, upw);
+    System.out.printf("[Auth Sign Up] User register: name \"%s\", email \"%s\", password \"%s\"\n", uname, umail, upw);
     String reg_key = "";
     try {
       reg_key = Codes.byte_rand512(uname, umail);
     } catch (Exception e) {
-      System.out.println("[Auth Register] hash function for registration key failed.");
+      System.out.println("[Auth Sign Up] hash function for registration key failed.");
       return;
     }
     if (check_user_exist(umail)) {
@@ -82,10 +81,10 @@ public class SignUp extends HttpServlet {
     try {
       while (rs.next()) {
         rt = true;
-        System.out.printf("[Authentication] query result: user exists\n");
+        System.out.printf("[Auth Sign Up] query result: user exists\n");
       }
     } catch (Exception e) {
-      System.out.println("[Authentication] SQL no result in query or failure happened ");
+      System.out.println("[Auth Sign Up] SQL no result in query or failure happened ");
     }
     return rt;
   }
