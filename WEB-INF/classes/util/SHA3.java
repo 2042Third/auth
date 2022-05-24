@@ -16,7 +16,7 @@ public class SHA3 {
   /**
    * Takes a string return a sha3-256 hash string.
    */
-  public static String get_sha3(String a) throws Exception {
+  public static String get_sha3(String a) throws IllegalArgumentException {
     MessageDigest md;
     try {
       md = MessageDigest.getInstance("SHA3-256");
@@ -30,7 +30,7 @@ public class SHA3 {
   /**
    * Takes a string return a sha3-512 hash string.
    */
-  public static String get_sha3A(String a) throws Exception {
+  public static String get_sha3A(String a) throws IllegalArgumentException {
     MessageDigest md;
     try {
       md = MessageDigest.getInstance("SHA3-512");
@@ -42,12 +42,13 @@ public class SHA3 {
   }
 
   /**
-   * Takes a string return a sha3-128 hash string.
+   * Takes a string return a sha3-256 hash string.
+   * note*: This is exactly the same as get_SHA3()
    */
-  public static String get_sha3B(String a) throws Exception {
+  public static String get_sha3B(String a) throws IllegalArgumentException {
     MessageDigest md;
     try {
-      md = MessageDigest.getInstance("SHA3-128");
+      md = MessageDigest.getInstance("SHA3-256");
     } catch (NoSuchAlgorithmException e) {
       throw new IllegalArgumentException(e);
     }

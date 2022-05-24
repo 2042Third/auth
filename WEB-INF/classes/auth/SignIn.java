@@ -53,6 +53,8 @@ public class SignIn extends HttpServlet {
 
     if (check_user_login(umail, upw)) {
       System.out.println("[Auth ] " + date.getTime() + "");
+      System.out.printf("[Auth TEST] %s => %s\n", Codes.byte_rand128(umail), Codes.byte_rand128(umail).substring(0, 8));
+
       if (areg_status.equals("1")) {
         System.out.printf("[Auth ] Registered user \"%s\" sign in\n", auser);
         respond_user();

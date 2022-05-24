@@ -35,19 +35,14 @@ public class SignUp extends HttpServlet {
 
     json_data = JSONParse.parse(data);
 
-    Date date = new Date();
     uname = (String) json_data.get("uname");
     upw = (String) json_data.get("upw");
     umail = (String) json_data.get("umail");
     from = (String) json_data.get("type");
     System.out.printf("[Auth Register] User register: name \"%s\", email \"%s\", password \"%s\"\n", uname, umail, upw);
-    String intermediate = "" + Math.random();
-    intermediate += date.getTime() + "";
-    intermediate += uname;
-    intermediate += umail;
     String reg_key = "";
     try {
-      reg_key = SHA3.get_sha3A(intermediate);
+      reg_key = Codes.byte_rand512(uname, umail);
     } catch (Exception e) {
       System.out.println("[Auth Register] hash function for registration key failed.");
       return;
