@@ -13,36 +13,12 @@ import util.JSONParse;
  * 
  */
 public class SignInUser extends User {
-  Date date = new Date();
-  private PrintWriter out;
-  private String acreation = "";
-  private String auser = "";
-  private String aemail = "";
-  private String areg_status = "";
-  private String asession = "session-placeholder";
-
-  Map<String, Object> json_data;
-
   /**
-   * Set the user's output stream
+   * SignInUser constructor
    * 
    */
-  public void set_out(PrintWriter a) {
-    out = a;
-  }
-
-  /**
-   * Parses the incoming json data
-   * 
-   * @param data json string
-   */
-  public void parse_json(String data) {
-    json_data = JSONParse.parse(data);
-
-    upass = (String) json_data.get("upw");
-    uemail = (String) json_data.get("umail");
-    System.out.println("[Auth SignIn] " + date.getTime() + "");
-    System.out.printf("[Auth SignIn] User try sign in: email \"%s\"\n\n", uemail);
+  public SignInUser() {
+    user_type = "SignIn";
 
   }
 
@@ -74,16 +50,19 @@ public class SignInUser extends User {
     }
   }
 
-  private Boolean respond_user() {
-    String res_str = JSONParse.json_request("login", "server", auser, acreation, aemail, asession, "success");
-    out.print(res_str);
-    return true;
-  }
+  /**
+   * Parses the incoming json data
+   * 
+   * @param data json string
+   */
+  public void parse_json(String data) {
+    json_data = JSONParse.parse(data);
 
-  private Boolean respond_user_fail() {
-    String res_str = JSONParse.json_request("login", "server", "", "", "", "", "fail");
-    out.print(res_str);
-    return true;
+    upass = (String) json_data.get("upw");
+    uemail = (String) json_data.get("umail");
+    System.out.println("[Auth " + user_type + "] " + date.getTime() + "");
+    System.out.printf("[Auth %s] User try sign in: email \"%s\"\n", user_type, uemail);
+
   }
 
   private Boolean check_user_login(String uemail, String upass) {
