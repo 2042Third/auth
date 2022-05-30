@@ -26,6 +26,7 @@ public class NotesUser extends User {
     requests.email = (String) json_data.get("email");
     requests.sess = (String) json_data.get("sess");
     requests.ntype = (String) json_data.get("ntype");
+    requests.ntype = (String) json_data.get("username");
     requests.unencrypted_hash = (String) json_data.get("h");
   }
 
@@ -37,16 +38,17 @@ public class NotesUser extends User {
   public void resolve_action() {
     // New Note
     if (requests.ntype.equals("1")) {
+      System.out.printf("[Note User] request new note from user=%s\n", requests.username);
       ResultSet rs = DataStart.u_notes_new(requests);
       Boolean rt = false;
       try {
         while (rs.next()) {
           requests.note_id = rs.getString("note_id");
           rt = true;
-          System.out.printf("[Note] query result: note_id=%s\n", requests.note_id);
+          System.out.printf("[Note User] query result: note_id=%s\n", requests.note_id);
         }
       } catch (Exception e) {
-        System.out.println("[Note] SQL no result in query or failure happened ");
+        System.out.println("[Note User] SQL no result in query or failure happened ");
       }
     }
 
@@ -80,10 +82,10 @@ public class NotesUser extends User {
     try {
       while (rs.next()) {
         rt = true;
-        System.out.printf("[Auth Sign Up] query result: user exists\n");
+        System.out.printf("[Note User] query result: user exists\n");
       }
     } catch (Exception e) {
-      System.out.println("[Auth Sign Up] SQL no result in query or failure happened ");
+      System.out.println("[Note User] SQL no result in query or failure happened ");
     }
     return rt;
   }

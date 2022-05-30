@@ -17,6 +17,7 @@ public class note {
   public String content;
   public String unencrypted_hash;
   public String email;
+  public String username;
   public String note_id;
   public String ntype;
   public String sess;

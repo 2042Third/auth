@@ -22,6 +22,7 @@ public class Notes extends HttpServlet {
 
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
+    System.out.printf("[Note] new request\n");
     NotesUser usr_ = new NotesUser();
 
     response.setContentType("text/html"); // response stream
