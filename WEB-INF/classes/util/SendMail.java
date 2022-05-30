@@ -80,4 +80,25 @@ public class SendMail {
         return 1;
     }
 
+    public int send_chpw(String email, String uname, String reg_key, String mail_loc) {
+        try {
+            MimeMessage msg = new MimeMessage(session);
+            msg.setFrom(new InternetAddress("mikeyiyang@outlook.com"));
+            InternetAddress[] address = { new InternetAddress(email) };
+            msg.setRecipients(Message.RecipientType.TO, address);
+            msg.setSubject("PDM Registration Link");
+            // msg.addHeader("x-cloudmta-class", "standard");
+            // msg.addHeader("x-cloudmta-tags", "demo, example");
+            msg.setContent(EmbedHTML.email("/auth", uname, reg_key, reg_key), "text/html");
+
+            Transport.send(msg);
+
+            System.out.println("[ Send Mail ] Message Sent.");
+        } catch (jakarta.mail.MessagingException ex) {
+            System.out.println("[ Send Mail ] Send Email Failure.");
+            throw new RuntimeException(ex);
+        }
+        return 1;
+    }
+
 }

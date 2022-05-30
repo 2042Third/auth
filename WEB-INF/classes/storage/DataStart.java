@@ -57,7 +57,7 @@ public class DataStart {
    * @return a ResultSet with user name, email, account creation time,
    *         registration status
    */
-  public static ResultSet q_userinfo_login(String uemail, String upass) {
+  public static ResultSet q_userinfo_login(userinfo u) {
     // Preferences node = Preferences.userNodeForPackage(this.getClass());
     try {
       Class.forName("org.postgresql.Driver");
@@ -69,11 +69,11 @@ public class DataStart {
           dbstorel,
           dbstoren,
           dbstorep);
-      System.out.printf("[postgresql] checking signin for email: %s and input pssword\n", uemail);
+      System.out.printf("[postgresql] checking signin for email: %s and input pssword\n", u.email);
       String query = Queries.q_userinfo_login;
       PreparedStatement stat = con.prepareStatement(query);
-      stat.setString(1, uemail);
-      stat.setString(2, upass);
+      stat.setString(1, u.email);
+      stat.setString(2, u.pass);
       return stat.executeQuery();
     } catch (Exception e) {
       e.printStackTrace();
@@ -118,7 +118,7 @@ public class DataStart {
    * @param uemail user email
    * @return ResultSet with the query result for this input email
    */
-  public static ResultSet q_userinfo_check(String uemail) {
+  public static ResultSet q_userinfo_check(userinfo u) {
     try {
       Class.forName("org.postgresql.Driver");
     } catch (Exception e) {
@@ -129,10 +129,10 @@ public class DataStart {
           dbstorel,
           dbstoren,
           dbstorep);
-      System.out.printf("[postgresql] checking signin for email: %s\n", uemail);
+      System.out.printf("[postgresql] checking signin for email: %s\n", u.email);
       String query = Queries.q_userinfo_check;
       PreparedStatement stat = con.prepareStatement(query);
-      stat.setString(1, uemail);
+      stat.setString(1, u.email);
       return stat.executeQuery();
     } catch (Exception e) {
       e.printStackTrace();
@@ -150,7 +150,10 @@ public class DataStart {
    * @param prod    creation time
    * @param reg_key registration key
    */
-  public static void register_user(String uname, String umail, String upw, String prod, String reg_key) {
+  public static void register_user(userinfo u) {
+
+    // public static void register_user(String uname, String umail, String upw,
+    // String prod, String reg_key) {
     Date date = new Date();
     // Preferences node = Preferences.userNodeForPackage(this.getClass());
     try {
@@ -166,14 +169,14 @@ public class DataStart {
       String query = Queries.register_user;
 
       PreparedStatement stat = con.prepareStatement(query);
-      stat.setString(1, uname);
-      stat.setString(2, upw);
+      stat.setString(1, u.name);
+      stat.setString(2, u.pass);
       stat.setString(3, date.getTime() + "");
-      stat.setString(4, prod);
-      stat.setString(5, umail);
-      stat.setString(6, reg_key);
+      stat.setString(4, u.user_type);
+      stat.setString(5, u.email);
+      stat.setString(6, u.reg_key);
       stat.setString(7, "testing user, not production code...");
-      stat.setString(8, reg_key);
+      stat.setString(8, u.reg_key);
       // ResultSet rs = stat.executeQuery();
       stat.executeUpdate();
 
@@ -199,7 +202,7 @@ public class DataStart {
    * @param uhash    Hash of the unencrypted note
    * @return ResultSet that contain the id of the newly create note.
    */
-  public static ResultSet u_notes_new(String uemail, String ucontent, String uhash) {
+  public static ResultSet u_notes_new(note n) {
     try {
       Class.forName("org.postgresql.Driver");
     } catch (Exception e) {
@@ -212,12 +215,12 @@ public class DataStart {
           dbstorep);
       String query = Queries.u_notes_new;
       PreparedStatement stat = con.prepareStatement(query);
-      stat.setString(1, ucontent);
-      stat.setString(2, uhash);
-      stat.setString(3, SHA3.get_sha3A(ucontent));
-      stat.setString(4, uemail);
+      stat.setString(1, n.content);
+      stat.setString(2, n.hash);
+      stat.setString(3, SHA3.get_sha3A(n.content));
+      stat.setString(4, n.email);
 
-      System.out.printf("[web_notes storage notes] new note added for user email \"%s\"\n", uemail);
+      System.out.printf("[web_notes storage notes] new note added for user email \"%s\"\n", n.email);
       return stat.executeQuery();
       // stat.executeUpdate();
     } catch (Exception e) {
@@ -234,7 +237,7 @@ public class DataStart {
    * @param uhash    Hash of the unencrypted note
    * @param unoteid  ID of the note being updated
    */
-  public static void u_notes_update(String ucontent, String uhash, String unoteid) {
+  public static void u_notes_update(note n) {
     try {
       Class.forName(dbstored);
     } catch (Exception e) {
@@ -247,17 +250,49 @@ public class DataStart {
           dbstorep);
       String query = Queries.u_notes_update;
       PreparedStatement stat = con.prepareStatement(query);
-      stat.setString(1, ucontent);
-      stat.setString(2, uhash);
-      stat.setString(3, SHA3.get_sha3A(ucontent));
-      stat.setString(4, unoteid);
+      stat.setString(1, n.content);
+      stat.setString(2, n.hash);
+      stat.setString(3, SHA3.get_sha3A(n.content));
+      stat.setString(4, n.note_id);
 
-      System.out.printf("[web_notes storage notes] notes updated for noteid \"%s\"\n", unoteid);
+      System.out.printf("[web_notes storage notes] notes updated for noteid \"%s\"\n", n.note_id);
       // ResultSet rs = stat.executeQuery();
       stat.executeUpdate();
     } catch (Exception e) {
       e.printStackTrace();
       System.out.println("Opening connection unsuccessful or update existing note failure!");
     }
+  }
+
+  /**
+   * Return all the heads of a user
+   * 
+   * @param n note object
+   * @return all heads of the notes that the user has
+   */
+  public static ResultSet q_notes_heads(note n) {
+    try {
+      Class.forName("org.postgresql.Driver");
+    } catch (Exception e) {
+      System.out.println("postgresql driver not found.");
+    }
+    try {
+      Connection con = DriverManager.getConnection(
+          dbstorel,
+          dbstoren,
+          dbstorep);
+      String query = Queries.u_notes_new;
+      PreparedStatement stat = con.prepareStatement(query);
+      stat.setString(1, n.email);
+      stat.setString(2, n.sess);
+
+      System.out.printf("[web_notes storage notes] getting the heads of user \"%s\"\n", n.email);
+      return stat.executeQuery();
+      // stat.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.out.println("Opening connection unsuccessful or new note creation failure!");
+    }
+    return null;
   }
 }

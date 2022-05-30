@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Map;
 
 import util.JSONParse;
+import util.userinfo;
 
 /**
  * Handles a user's signin or sign up request
@@ -13,22 +14,23 @@ import util.JSONParse;
  */
 public class User {
   Date date = new Date();
-  protected String uemail;
-  protected String upass;
+  protected userinfo userinfo_;
+  // protected String uemail;
+  // protected String upass;
   protected PrintWriter out;
   Map<String, Object> json_data;
   protected String sender = "server";
   protected String user_type = "none";
 
   // Signin specific
-  protected String acreation = "";
-  protected String auser = "";
-  protected String aemail = "";
-  protected String areg_status = "";
-  protected String asession = "session-placeholder";
+  // protected String acreation = "";
+  // protected String auser = "";
+  // protected String aemail = "";
+  // protected String areg_status = "";
+  // protected String asession = "session-placeholder";
 
   // Signup specific
-  protected String uname = "";
+  // protected String uname = "";
   protected String from = "";
 
   /**
@@ -39,8 +41,13 @@ public class User {
     out = a;
   }
 
+  /**
+   * Respondes the user of the signin
+   * 
+   */
   protected Boolean respond_user() {
-    String res_str = JSONParse.json_request(user_type, sender, auser, acreation, aemail, asession, "success");
+    userinfo_.status = "success";
+    String res_str = JSONParse.json_request(user_type, sender, userinfo_);
     out.print(res_str);
     return true;
   }

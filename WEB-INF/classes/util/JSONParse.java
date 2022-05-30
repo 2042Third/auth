@@ -108,6 +108,23 @@ public final class JSONParse {
    * 
    * @param sender sender
    * @param recv   receiver
+   */
+  public static String json_request(String type, String sender, userinfo u) {
+    JSONObject jobj = new JSONObject();
+    jobj.put("type", type);
+    jobj.put("sender", sender);
+    jobj.put("receiver", u.name);
+    jobj.put("v1", u.creation_time);
+    jobj.put("v2", u.email);
+    jobj.put("v3", u.status);
+    return jsts(jobj);
+  }
+
+  /**
+   * Returns a json string from the given input.
+   * 
+   * @param sender sender
+   * @param recv   receiver
    * @param v1     data
    * @param v2     data
    * @param v3     data
@@ -149,4 +166,21 @@ public final class JSONParse {
     return jsts(jobj);
   }
 
+  /**
+   * Returns a json string from the given input.
+   * 
+   * @param rq note request
+   */
+  public static String note_request(note rq) {
+    JSONObject jobj = new JSONObject();
+    jobj.put("content", rq.content);
+    jobj.put("email", rq.email);
+    jobj.put("h", rq.unencrypted_hash);
+    jobj.put("note_id", rq.note_id);
+    jobj.put("ntype", rq.ntype);
+    jobj.put("sess", rq.sess);
+    jobj.put("status", rq.status);
+    jobj.put("hash", rq.hash);
+    return jsts(jobj);
+  }
 }

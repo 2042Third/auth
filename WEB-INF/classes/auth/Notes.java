@@ -5,10 +5,7 @@
  * */
 package auth;
 
-import util.*;
-import storage.*;
 import java.io.*;
-import java.util.*;
 import jakarta.servlet.*;
 
 import jakarta.servlet.http.HttpServlet;
@@ -22,29 +19,18 @@ import java.io.IOException;
  * @author Yi Yang
  */
 public class Notes extends HttpServlet {
-  private PrintWriter out;
-  private Map<String, Object> json_data;
-  private note requests = new note();
 
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
+    NotesUser usr_ = new NotesUser();
+
     response.setContentType("text/html"); // response stream
-    out = response.getWriter();
+    usr_.set_out(response.getWriter());
 
     String data = read_stream(request.getInputStream()); // input stream
+    usr_.parse_json(data);
+    usr_.resolve_action();
 
-    json_data = JSONParse.parse(data);
-    requests.content = (String) json_data.get("ucontent");
-    requests.note_id = (String) json_data.get("unoteid");
-    requests.email = (String) json_data.get("uemail");
-    requests.is_new_note = (String) json_data.get("is_new_note");
-    requests.unencrypted_hash = (String) json_data.get("h");
-
-    if (requests.is_new_note.equals("1")) {
-      DataStart.u_notes_new(requests.email, requests.content, requests.unencrypted_hash);
-    } else {
-      DataStart.u_notes_update(requests.content, requests.unencrypted_hash, requests.note_id);
-    }
   }
 
   /**
@@ -65,11 +51,4 @@ public class Notes extends HttpServlet {
     return _str;
   }
 
-  class note {
-    String content;
-    String unencrypted_hash;
-    String email;
-    String note_id;
-    String is_new_note;
-  }
 }
