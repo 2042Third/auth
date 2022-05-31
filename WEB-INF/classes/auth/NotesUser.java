@@ -2,6 +2,7 @@ package auth;
 
 import java.io.PrintWriter;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Map;
 import util.*;
 
@@ -41,11 +42,9 @@ public class NotesUser extends User {
     if (requests.ntype.equals("new")) {
       System.out.printf("[Note User] request new note from user=%s\n", requests.username);
       ResultSet rs = DataStart.u_notes_new(requests);
-      Boolean rt = false;
       try {
         while (rs.next()) {
           requests.note_id = rs.getString("noteid");
-          rt = true;
           System.out.printf("[Note User] query result: note_id=%s\n", requests.note_id);
         }
       } catch (Exception e) {
@@ -59,9 +58,14 @@ public class NotesUser extends User {
       DataStart.u_notes_update(requests);
     }
 
-    // Get Heads
+    // Get Heads, not respond function, intigrated instead
     else if (requests.ntype.equals("heads")) {
-
+      System.out.printf("[Note User] request heads from user=%s\n", requests.username);
+      note_head[] nhs = get_notes_heads();
+      requests.ntype = "heads_return";
+      String res_str = JSONParse.note_head_request(requests, nhs);
+      out.print(res_str);
+      System.out.printf("[Note User] request complete heads from user=%s\n \t heads: %s", res_str);
     }
   }
 
@@ -78,18 +82,23 @@ public class NotesUser extends User {
   /**
    * Check the session key and get the heads of all notes for this user.
    */
-  private Boolean get_notes_heads() {
+  private note_head[] get_notes_heads() {
     ResultSet rs = DataStart.q_notes_heads(requests);
-    Boolean rt = false;
+    ArrayList<note_head> all_heads = new ArrayList<note_head>();
+    note_head nh;
     try {
       while (rs.next()) {
-        rt = true;
-        System.out.printf("[Note User] query result: user exists\n");
+        nh = new note_head();
+        nh.note_id = rs.getString("noteid");
+        nh.head = rs.getString("head");
+        all_heads.add(nh);
+        System.out.printf("[Note User] query heads result: note_id's=%s\n", nh.note_id);
       }
     } catch (Exception e) {
       System.out.println("[Note User] SQL no result in query or failure happened ");
+      return null;
     }
-    return rt;
+    return (note_head[]) all_heads.toArray();
   }
 
 }

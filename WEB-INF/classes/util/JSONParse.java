@@ -1,5 +1,6 @@
 package util;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.json.simple.parser.JSONParser;
@@ -36,6 +37,21 @@ public final class JSONParse {
    * Takes a json object returns a json string
    */
   public static String jsts(JSONObject a) {
+    StringWriter out = new StringWriter();
+    try {
+      a.writeJSONString(out);
+    } catch (IOException e) {
+      System.out.println("Json to string fialure!");
+      return "";
+    }
+    return out.toString();
+  }
+
+  /**
+   * JSON to string
+   * Takes a json object returns a json string
+   */
+  public static String jsts(JSONArray a) {
     StringWriter out = new StringWriter();
     try {
       a.writeJSONString(out);
@@ -181,6 +197,34 @@ public final class JSONParse {
     jobj.put("sess", rq.sess);
     jobj.put("status", rq.status);
     jobj.put("hash", rq.hash);
+    return jsts(jobj);
+  }
+
+  /**
+   * Returns a response for the user's all note heads' json
+   * 
+   * @param rq   note request
+   * @param arry note heads
+   */
+  public static String note_head_request(note rq, note_head[] arry) {
+    JSONObject jobj = new JSONObject();
+    JSONArray jarry = new JSONArray();
+    Map m;
+    for (note_head i : arry) {
+      m = new LinkedHashMap<>(2);
+      m.put("head", i.head);
+      m.put("note_id", i.note_id);
+      jarry.add(m);
+    }
+    String heads_str = jsts(jarry);
+    jobj.put("content", heads_str);
+    jobj.put("email", rq.email);
+    jobj.put("h", rq.unencrypted_hash);
+    jobj.put("note_id", rq.note_id);
+    jobj.put("ntype", rq.ntype);
+    jobj.put("sess", rq.sess);
+    jobj.put("status", rq.status);
+    jobj.put("hash", SHA3.get_sha3(heads_str));
     return jsts(jobj);
   }
 }
