@@ -295,4 +295,38 @@ public class DataStart {
     }
     return null;
   }
+
+  /**
+   * Return all the heads of a user
+   * 
+   * @param n note object
+   * @return all heads of the notes that the user has
+   */
+  public static ResultSet q_notes_get(note n) {
+    try {
+      Class.forName("org.postgresql.Driver");
+    } catch (Exception e) {
+      System.out.println("postgresql driver not found.");
+    }
+    try {
+      Connection con = DriverManager.getConnection(
+          dbstorel,
+          dbstoren,
+          dbstorep);
+      String query = Queries.u_notes_new;
+      PreparedStatement stat = con.prepareStatement(query);
+      stat.setString(1, n.email);
+      stat.setString(2, n.sess);
+      stat.setString(3, n.note_id);
+
+      System.out.printf("[web_notes storage notes] getting the contents of user \"%s\" note=\"%s\"\n", n.email,
+          n.note_id);
+      return stat.executeQuery();
+      // stat.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.out.println("Opening connection unsuccessful or new note creation failure!");
+    }
+    return null;
+  }
 }

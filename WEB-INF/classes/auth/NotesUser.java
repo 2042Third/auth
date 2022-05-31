@@ -38,7 +38,7 @@ public class NotesUser extends User {
   public void resolve_action() {
     System.out.printf("[Note User] request resolving user=%s\n", requests.username);
     // New Note
-    if (requests.ntype.equals("1")) {
+    if (requests.ntype.equals("new")) {
       System.out.printf("[Note User] request new note from user=%s\n", requests.username);
       ResultSet rs = DataStart.u_notes_new(requests);
       Boolean rt = false;
@@ -55,12 +55,12 @@ public class NotesUser extends User {
     }
 
     // Update Note
-    else if (requests.ntype.equals("0")) {
+    else if (requests.ntype.equals("update")) {
       DataStart.u_notes_update(requests);
     }
 
     // Get Heads
-    else if (requests.ntype.equals("2")) {
+    else if (requests.ntype.equals("heads")) {
 
     }
   }

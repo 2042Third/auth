@@ -36,6 +36,12 @@ public class Queries {
                         + " where u.email = ?"
                         + " and s.key = ?"
                         + " and u.id = s.userid and u.id = n.usrid;";
+        public static String q_notes_get = "select  n.content content, n.heading head, n.time time, n.h h, n.noteid noteid"
+                        + " from userinfo u, notes n, sessions s"
+                        + " where u.email = ?"
+                        + " and s.key = ?"
+                        + " anb n.noteid = ?"
+                        + " and u.id = s.userid and u.id = n.usrid;";;
         // String registerquery = "INSERT INTO userinfo(name, spw, creation, product,
         // email, register_key, logs) VALUES(?, ?, ?, ?, ?, ?, ?) ON CONFLICT (id) DO
         // UPDATE SET txt = EXCLUDED.txt;";
