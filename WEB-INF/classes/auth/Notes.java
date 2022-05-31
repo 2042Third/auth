@@ -22,13 +22,18 @@ public class Notes extends HttpServlet {
 
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
+    String data;
     System.out.printf("[Note] new request\n");
     NotesUser usr_ = new NotesUser();
 
     response.setContentType("text/html"); // response stream
-    usr_.set_out(response.getWriter());
-
-    String data = read_stream(request.getInputStream()); // input stream
+    try {
+      usr_.set_out(response.getWriter());
+      data = read_stream(request.getInputStream()); // input stream
+    } catch (IOException e) {
+      System.out.printf("[Note] error, cannot read incoming message or get the return stream\n");
+      return;
+    }
     usr_.parse_json(data);
     usr_.resolve_action();
 

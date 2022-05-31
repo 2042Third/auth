@@ -12,7 +12,7 @@ public class NotesUser extends User {
 
   private Map<String, Object> json_data;
   private note requests = new note();
-  private PrintWriter out;
+  // private PrintWriter out;
 
   /**
    * Parses the incoming json data
@@ -22,11 +22,11 @@ public class NotesUser extends User {
   public void parse_json(String data) {
     json_data = JSONParse.parse(data);
     requests.content = (String) json_data.get("content");
-    requests.note_id = (String) json_data.get("noteid");
+    requests.note_id = (String) json_data.get("note_id");
     requests.email = (String) json_data.get("email");
     requests.sess = (String) json_data.get("sess");
     requests.ntype = (String) json_data.get("ntype");
-    requests.ntype = (String) json_data.get("username");
+    requests.username = (String) json_data.get("username");
     requests.unencrypted_hash = (String) json_data.get("h");
   }
 
@@ -36,6 +36,7 @@ public class NotesUser extends User {
    * 
    */
   public void resolve_action() {
+    System.out.printf("[Note User] request resolving user=%s\n", requests.username);
     // New Note
     if (requests.ntype.equals("1")) {
       System.out.printf("[Note User] request new note from user=%s\n", requests.username);
@@ -43,13 +44,14 @@ public class NotesUser extends User {
       Boolean rt = false;
       try {
         while (rs.next()) {
-          requests.note_id = rs.getString("note_id");
+          requests.note_id = rs.getString("noteid");
           rt = true;
           System.out.printf("[Note User] query result: note_id=%s\n", requests.note_id);
         }
       } catch (Exception e) {
         System.out.println("[Note User] SQL no result in query or failure happened ");
       }
+      respond_user_note();
     }
 
     // Update Note
