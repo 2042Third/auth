@@ -53,7 +53,8 @@ public class User {
   }
 
   protected Boolean respond_user_fail() {
-    String res_str = JSONParse.json_request(user_type, sender, "", "", "", "", "fail");
+    userinfo_.status = "fail";
+    String res_str = JSONParse.json_request(user_type, sender, userinfo_);
     out.print(res_str);
     return true;
   }

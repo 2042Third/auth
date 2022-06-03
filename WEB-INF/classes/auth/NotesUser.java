@@ -32,6 +32,14 @@ public class NotesUser extends User {
   }
 
   /**
+   * Sets the object for debug. Insecure.
+   * 
+   */
+  public void enable_debug() {
+    requests.sess = "debugkey";
+  }
+
+  /**
    * Resolves the next action of the request, and perform the actions.
    * Update or new.
    * 
@@ -50,6 +58,8 @@ public class NotesUser extends User {
       } catch (Exception e) {
         System.out.println("[Note User] SQL no result in query or failure happened ");
       }
+      requests.ntype = "new_return";
+      requests.status = "success";
       respond_user_note();
     }
 
@@ -61,11 +71,14 @@ public class NotesUser extends User {
     // Get Heads, not respond function, intigrated instead
     else if (requests.ntype.equals("heads")) {
       System.out.printf("[Note User] request heads from user=%s\n", requests.username);
-      note_head[] nhs = get_notes_heads();
+      Object[] nhs = get_notes_heads();
       requests.ntype = "heads_return";
+      requests.status = "success";
+      requests.note_id = "listed";
+      requests.unencrypted_hash = "listed";
       String res_str = JSONParse.note_head_request(requests, nhs);
       out.print(res_str);
-      System.out.printf("[Note User] request complete heads from user=%s\n \t heads: %s", res_str);
+      System.out.printf("[Note User] request complete heads from user=%s\n ", res_str);
     }
   }
 
@@ -82,7 +95,7 @@ public class NotesUser extends User {
   /**
    * Check the session key and get the heads of all notes for this user.
    */
-  private note_head[] get_notes_heads() {
+  private Object[] get_notes_heads() {
     ResultSet rs = DataStart.q_notes_heads(requests);
     ArrayList<note_head> all_heads = new ArrayList<note_head>();
     note_head nh;
@@ -98,7 +111,7 @@ public class NotesUser extends User {
       System.out.println("[Note User] SQL no result in query or failure happened ");
       return null;
     }
-    return (note_head[]) all_heads.toArray();
+    return all_heads.toArray();
   }
 
 }

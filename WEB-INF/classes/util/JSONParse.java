@@ -130,9 +130,9 @@ public final class JSONParse {
     jobj.put("type", type);
     jobj.put("sender", sender);
     jobj.put("receiver", u.name);
-    jobj.put("v1", u.creation_time);
-    jobj.put("v2", u.email);
-    jobj.put("v3", u.status);
+    jobj.put("time", u.creation_time);
+    jobj.put("email", u.email);
+    jobj.put("status", u.status);
     return jsts(jobj);
   }
 
@@ -206,18 +206,19 @@ public final class JSONParse {
    * @param rq   note request
    * @param arry note heads
    */
-  public static String note_head_request(note rq, note_head[] arry) {
+  public static String note_head_request(note rq, Object[] arry) {
     JSONObject jobj = new JSONObject();
     JSONArray jarry = new JSONArray();
     Map m;
-    for (note_head i : arry) {
+    for (Object i : arry) {
       m = new LinkedHashMap<>(2);
-      m.put("head", i.head);
-      m.put("note_id", i.note_id);
+      m.put("head", ((note_head) i).head);
+      m.put("note_id", ((note_head) i).note_id);
       jarry.add(m);
     }
     String heads_str = jsts(jarry);
-    jobj.put("content", heads_str);
+    System.out.printf("heads_str:\"%s\"\n", heads_str);
+    jobj.put("content", jarry);
     jobj.put("email", rq.email);
     jobj.put("h", rq.unencrypted_hash);
     jobj.put("note_id", rq.note_id);

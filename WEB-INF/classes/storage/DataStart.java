@@ -250,12 +250,10 @@ public class DataStart {
           dbstorep);
       String query = Queries.u_notes_update;
       PreparedStatement stat = con.prepareStatement(query);
-      stat.setString(1, n.content);
-      stat.setString(2, n.hash);
-      stat.setString(3, SHA3.get_sha3A(n.content));
-      stat.setString(4, n.note_id);
+      stat.setString(1, n.email);
+      stat.setString(2, n.sess);
 
-      System.out.printf("[web_notes storage notes] notes updated for noteid \"%s\"\n", n.note_id);
+      System.out.printf("[web_notes storage notes] getting heads for noteid \"%s\"\n", n.note_id);
       // ResultSet rs = stat.executeQuery();
       stat.executeUpdate();
     } catch (Exception e) {
@@ -281,7 +279,7 @@ public class DataStart {
           dbstorel,
           dbstoren,
           dbstorep);
-      String query = Queries.u_notes_new;
+      String query = Queries.q_notes_heads;
       PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, n.email);
       stat.setString(2, n.sess);
