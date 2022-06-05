@@ -197,6 +197,7 @@ public final class JSONParse {
     jobj.put("sess", rq.sess);
     jobj.put("status", rq.status);
     jobj.put("hash", rq.hash);
+    jobj.put("time", rq.time);
     return jsts(jobj);
   }
 

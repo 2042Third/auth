@@ -311,11 +311,11 @@ public class DataStart {
           dbstorel,
           dbstoren,
           dbstorep);
-      String query = Queries.u_notes_new;
+      String query = Queries.q_notes_get;
       PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, n.email);
       stat.setString(2, n.sess);
-      stat.setString(3, n.note_id);
+      stat.setInt(3, Integer.parseInt(n.note_id));
 
       System.out.printf("[web_notes storage notes] getting the contents of user \"%s\" note=\"%s\"\n", n.email,
           n.note_id);

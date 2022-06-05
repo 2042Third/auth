@@ -40,8 +40,8 @@ public class Queries {
                         + " from userinfo u, notes n, sessions s"
                         + " where u.email = ?"
                         + " and s.key = ?"
-                        + " anb n.noteid = ?"
-                        + " and u.id = s.userid and u.id = n.usrid;";;
+                        + " and n.noteid = ?"
+                        + " and u.id = s.userid and u.id = n.userid;";;
         // String registerquery = "INSERT INTO userinfo(name, spw, creation, product,
         // email, register_key, logs) VALUES(?, ?, ?, ?, ?, ?, ?) ON CONFLICT (id) DO
         // UPDATE SET txt = EXCLUDED.txt;";

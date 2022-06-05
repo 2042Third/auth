@@ -45,6 +45,7 @@ public class NotesUser extends User {
    * 
    */
   public void resolve_action() {
+    requests.status = "success";
     System.out.printf("[Note User] request resolving user=%s\n", requests.username);
     // New Note
     if (requests.ntype.equals("new")) {
@@ -59,7 +60,6 @@ public class NotesUser extends User {
         System.out.println("[Note User] SQL no result in query or failure happened ");
       }
       requests.ntype = "new_return";
-      requests.status = "success";
       respond_user_note();
     }
 
@@ -73,12 +73,20 @@ public class NotesUser extends User {
       System.out.printf("[Note User] request heads from user=%s\n", requests.username);
       Object[] nhs = get_notes_heads();
       requests.ntype = "heads_return";
-      requests.status = "success";
       requests.note_id = "listed";
       requests.unencrypted_hash = "listed";
       String res_str = JSONParse.note_head_request(requests, nhs);
       out.print(res_str);
       System.out.printf("[Note User] request complete heads from user=%s\n ", res_str);
+    }
+    // Get a note
+    else if (requests.ntype.equals("retrieve")) {
+      System.out.printf("[Note User] request retrieve from user=%s\n", requests.username);
+      requests.ntype = "retrieve_return";
+      get_note();
+      String res_str = JSONParse.note_request(requests);
+      out.print(res_str);
+      System.out.printf("[Note User] request complete retrieve from user=%s\n ", res_str);
     }
   }
 
@@ -109,9 +117,31 @@ public class NotesUser extends User {
       }
     } catch (Exception e) {
       System.out.println("[Note User] SQL no result in query or failure happened ");
+      requests.status = "failed";
       return null;
     }
     return all_heads.toArray();
+  }
+
+  /**
+   * gets the encrypted content of the note
+   * ==> n.content content, n.heading head, n.time time, n.h h, n.noteid noteid
+   */
+  private void get_note() {
+    ResultSet rs = DataStart.q_notes_get(requests);
+    try {
+      while (rs.next()) {
+        requests.content = rs.getString("content");
+        requests.head = rs.getString("head");
+        requests.time = rs.getString("time");
+        requests.unencrypted_hash = rs.getString("h");
+        requests.note_id = rs.getString("noteid");
+        System.out.printf("[Note User] query retrieve result: note_id's=%s\n", requests.note_id);
+      }
+    } catch (Exception e) {
+      System.out.println("[Note User] SQL no result in query or failure happened ");
+      requests.status = "failed";
+    }
   }
 
 }
