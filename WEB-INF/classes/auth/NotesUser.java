@@ -2,6 +2,7 @@ package auth;
 
 import java.io.PrintWriter;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 import util.*;
@@ -65,7 +66,16 @@ public class NotesUser extends User {
 
     // Update Note
     else if (requests.ntype.equals("update")) {
-      DataStart.u_notes_update(requests);
+      try {
+        DataStart.u_notes_update(requests);
+      } catch (SQLException e) {
+        requests.status = "failed";
+        System.out.println("[Note User] Update failure, no action performed.");
+        e.printStackTrace();
+      }
+      String res_str = JSONParse.note_request(requests);
+      out.print(res_str);
+      System.out.printf("[Note User] request complete update user=%s\n ", res_str);
     }
 
     // Get Heads, not respond function, intigrated instead

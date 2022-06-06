@@ -237,29 +237,27 @@ public class DataStart {
    * @param uhash    Hash of the unencrypted note
    * @param unoteid  ID of the note being updated
    */
-  public static void u_notes_update(note n) {
+  public static void u_notes_update(note n) throws SQLException {
     try {
       Class.forName(dbstored);
     } catch (Exception e) {
       System.out.println("postgresql driver not found.");
     }
-    try {
-      Connection con = DriverManager.getConnection(
-          dbstorel,
-          dbstoren,
-          dbstorep);
-      String query = Queries.u_notes_update;
-      PreparedStatement stat = con.prepareStatement(query);
-      stat.setString(1, n.email);
-      stat.setString(2, n.sess);
+    Connection con = DriverManager.getConnection(
+        dbstorel,
+        dbstoren,
+        dbstorep);
+    String query = Queries.u_notes_update;
+    PreparedStatement stat = con.prepareStatement(query);
+    stat.setString(1, n.content);
+    stat.setString(2, n.hash);
+    stat.setString(3, SHA3.get_sha3(n.content));
+    stat.setInt(4, Integer.parseInt(n.note_id));
 
-      System.out.printf("[web_notes storage notes] getting heads for noteid \"%s\"\n", n.note_id);
-      // ResultSet rs = stat.executeQuery();
-      stat.executeUpdate();
-    } catch (Exception e) {
-      e.printStackTrace();
-      System.out.println("Opening connection unsuccessful or update existing note failure!");
-    }
+    System.out.printf("[web_notes storage notes] making updates to \"%s\"\n", n.note_id);
+    // ResultSet rs = stat.executeQuery();
+    stat.executeUpdate();
+
   }
 
   /**

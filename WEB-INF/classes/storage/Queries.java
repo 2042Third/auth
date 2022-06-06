@@ -24,13 +24,12 @@ public class Queries {
                         + "userinfo u "
                         + " where u.email = ? "
                         + " returning noteid;";
-        public static String u_notes_update = "update table notes n "
-                        + "set n.content = ? "
-                        + "n.h = ? "
-                        + "n.intgrh = ? "
-                        + "n.noteid = ? "
-                        + "n.update_time = CURRENT_TIMESTAMP "
-                        + " where n.id;";
+        public static String u_notes_update = "update notes "
+                        + " set content = ? "
+                        + ", h = ? "
+                        + ", intgrh = ? "
+                        + ", update_time = CURRENT_TIMESTAMP "
+                        + " where noteid = ?;";
         public static String q_notes_heads = "select n.heading head, n.time time, n.h h, n.noteid noteid"
                         + " from userinfo u, notes n, sessions s"
                         + " where u.email = ?"
