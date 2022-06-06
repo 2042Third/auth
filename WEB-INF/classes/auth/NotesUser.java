@@ -28,6 +28,7 @@ public class NotesUser extends User {
     requests.email = (String) json_data.get("email");
     requests.sess = (String) json_data.get("sess");
     requests.ntype = (String) json_data.get("ntype");
+    requests.head = (String) json_data.get("head");
     requests.username = (String) json_data.get("username");
     requests.unencrypted_hash = (String) json_data.get("h");
   }
@@ -75,7 +76,7 @@ public class NotesUser extends User {
       }
       String res_str = JSONParse.note_request(requests);
       out.print(res_str);
-      System.out.printf("[Note User] request complete update user=%s\n ", res_str);
+      System.out.printf("[Note User] request complete update user=%s\n ", requests.email);
     }
 
     // Get Heads, not respond function, intigrated instead
@@ -87,7 +88,7 @@ public class NotesUser extends User {
       requests.unencrypted_hash = "listed";
       String res_str = JSONParse.note_head_request(requests, nhs);
       out.print(res_str);
-      System.out.printf("[Note User] request complete heads from user=%s\n ", res_str);
+      System.out.printf("[Note User] request complete heads from user=%s\n ", requests.email);
     }
     // Get a note
     else if (requests.ntype.equals("retrieve")) {
@@ -96,7 +97,7 @@ public class NotesUser extends User {
       get_note();
       String res_str = JSONParse.note_request(requests);
       out.print(res_str);
-      System.out.printf("[Note User] request complete retrieve from user=%s\n ", res_str);
+      System.out.printf("[Note User] request complete retrieve from user=%s\n ", requests.email);
     }
   }
 
@@ -122,8 +123,11 @@ public class NotesUser extends User {
         nh = new note_head();
         nh.note_id = rs.getString("noteid");
         nh.head = rs.getString("head");
+        nh.time = rs.getString("time");
+        nh.update_time = rs.getString("update_time");
         all_heads.add(nh);
-        System.out.printf("[Note User] query heads result: note_id's=%s\n", nh.note_id);
+        // System.out.printf("[Note User] query heads result: note_id's=%s\n",
+        // nh.note_id);
       }
     } catch (Exception e) {
       System.out.println("[Note User] SQL no result in query or failure happened ");
@@ -144,9 +148,11 @@ public class NotesUser extends User {
         requests.content = rs.getString("content");
         requests.head = rs.getString("head");
         requests.time = rs.getString("time");
+        requests.update_time = rs.getString("update_time");
         requests.unencrypted_hash = rs.getString("h");
         requests.note_id = rs.getString("noteid");
-        System.out.printf("[Note User] query retrieve result: note_id's=%s\n", requests.note_id);
+        // System.out.printf("[Note User] query retrieve result: note_id's=%s\n",
+        // requests.note_id);
       }
     } catch (Exception e) {
       System.out.println("[Note User] SQL no result in query or failure happened ");

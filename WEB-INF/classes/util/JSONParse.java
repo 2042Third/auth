@@ -198,6 +198,7 @@ public final class JSONParse {
     jobj.put("status", rq.status);
     jobj.put("hash", rq.hash);
     jobj.put("time", rq.time);
+    jobj.put("update_time", rq.update_time);
     jobj.put("head", rq.head);
     return jsts(jobj);
   }
@@ -214,6 +215,8 @@ public final class JSONParse {
     Map m;
     for (Object i : arry) {
       m = new LinkedHashMap<>(2);
+      m.put("time", ((note_head) i).time);
+      m.put("update_time", ((note_head) i).update_time);
       m.put("head", ((note_head) i).head);
       m.put("note_id", ((note_head) i).note_id);
       jarry.add(m);

@@ -28,19 +28,20 @@ public class Queries {
                         + " set content = ? "
                         + ", h = ? "
                         + ", intgrh = ? "
+                        + ", heading = ?"
                         + ", update_time = CURRENT_TIMESTAMP "
                         + " where noteid = ?;";
-        public static String q_notes_heads = "select n.heading head, n.time time, n.h h, n.noteid noteid"
+        public static String q_notes_heads = "select n.heading head, EXTRACT(EPOCH FROM n.time) time, EXTRACT(EPOCH FROM n.update_time) update_time, n.h h, n.noteid noteid"
                         + " from userinfo u, notes n, sessions s"
                         + " where u.email = ?"
                         + " and s.key = ?"
                         + " and u.id = s.userid and u.id = n.userid;";
-        public static String q_notes_get = "select  n.content content, n.heading head, n.time time, n.h h, n.noteid noteid"
+        public static String q_notes_get = "select  n.content content, n.heading head, EXTRACT(EPOCH FROM n.time) time, EXTRACT(EPOCH FROM n.update_time) update_time, n.h h, n.noteid noteid"
                         + " from userinfo u, notes n, sessions s"
                         + " where u.email = ?"
                         + " and s.key = ?"
                         + " and n.noteid = ?"
-                        + " and u.id = s.userid and u.id = n.userid;";;
+                        + " and u.id = s.userid and u.id = n.userid;";
         // String registerquery = "INSERT INTO userinfo(name, spw, creation, product,
         // email, register_key, logs) VALUES(?, ?, ?, ?, ?, ?, ?) ON CONFLICT (id) DO
         // UPDATE SET txt = EXCLUDED.txt;";

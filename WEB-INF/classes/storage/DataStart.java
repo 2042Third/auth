@@ -249,10 +249,13 @@ public class DataStart {
         dbstorep);
     String query = Queries.u_notes_update;
     PreparedStatement stat = con.prepareStatement(query);
+    System.out.printf("[web_notes storage notes] making updates content \"%s\"\n", n.content);
     stat.setString(1, n.content);
+    stat.setInt(4, Integer.parseInt(n.note_id));
     stat.setString(2, n.hash);
     stat.setString(3, SHA3.get_sha3(n.content));
-    stat.setInt(4, Integer.parseInt(n.note_id));
+    stat.setString(4, n.head);
+    stat.setInt(5, Integer.parseInt(n.note_id));
 
     System.out.printf("[web_notes storage notes] making updates to \"%s\"\n", n.note_id);
     // ResultSet rs = stat.executeQuery();
