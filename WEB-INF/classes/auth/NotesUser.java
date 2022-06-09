@@ -70,7 +70,7 @@ public class NotesUser extends User {
       try {
         DataStart.u_notes_update(requests);
       } catch (SQLException e) {
-        requests.status = "failed";
+        requests.status = "fail";
         System.out.println("[Note User] Update failure, no action performed.");
         e.printStackTrace();
       }
@@ -126,12 +126,12 @@ public class NotesUser extends User {
         nh.time = rs.getString("time");
         nh.update_time = rs.getString("update_time");
         all_heads.add(nh);
-        // System.out.printf("[Note User] query heads result: note_id's=%s\n",
-        // nh.note_id);
+        System.out.printf("[Note User] query heads result: note_id's=%s\n",
+            nh.note_id);
       }
     } catch (Exception e) {
       System.out.println("[Note User] SQL no result in query or failure happened ");
-      requests.status = "failed";
+      requests.status = "fail";
       return null;
     }
     return all_heads.toArray();
@@ -151,12 +151,12 @@ public class NotesUser extends User {
         requests.update_time = rs.getString("update_time");
         requests.unencrypted_hash = rs.getString("h");
         requests.note_id = rs.getString("noteid");
-        // System.out.printf("[Note User] query retrieve result: note_id's=%s\n",
-        // requests.note_id);
+        System.out.printf("[Note User] query retrieve result: note_id's=%s\n",
+            requests.note_id);
       }
     } catch (Exception e) {
       System.out.println("[Note User] SQL no result in query or failure happened ");
-      requests.status = "failed";
+      requests.status = "fail";
     }
   }
 

@@ -22,9 +22,11 @@ public class Notes extends HttpServlet {
 
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
+        String tester = request.getRequestURL().toString();
+        // response.setParameter("en");
+        // response.setParameter("id");
     String data;
     NotesUser usr_ = new NotesUser();
-
     response.setContentType("text/html"); // response stream
     try {
       usr_.set_out(response.getWriter());

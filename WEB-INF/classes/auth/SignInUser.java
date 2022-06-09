@@ -39,6 +39,7 @@ public class SignInUser extends User {
       if (auserinfo_.reg_status.equals("1")) {
         System.out.printf("[Auth SignIn] Registered user \"%s\" sign in\n", auserinfo_.name);
         userinfo_ = auserinfo_;
+
         respond_user();
       } else {
         System.out.printf("[Auth SignIn] Unregistered user \"%s\" sign in\n", auserinfo_.name);
@@ -85,6 +86,7 @@ public class SignInUser extends User {
             auserinfo_.reg_status);
 
       }
+      DataStart.u_userinfo_sess(au);
     } catch (Exception e) {
       System.out.println("[Auth SignIn Check User login] SQL no result in query or failure happened ");
     }

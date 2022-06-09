@@ -83,6 +83,39 @@ public class DataStart {
   }
 
   /**
+   * Query the user info when login
+   * 
+   * @param uemail user email
+   * @param upass  user password
+   * @return a ResultSet with user name, email, account creation time,
+   *         registration status
+   */
+  public static void u_userinfo_sess(userinfo u) {
+    // Preferences node = Preferences.userNodeForPackage(this.getClass());
+    try {
+      Class.forName("org.postgresql.Driver");
+    } catch (Exception e) {
+      System.out.println("postgresql driver not found.");
+    }
+    try {
+      Connection con = DriverManager.getConnection(
+          dbstorel,
+          dbstoren,
+          dbstorep);
+      System.out.printf("[postgresql] checking \n", u.email);
+      String query = Queries.u_userinfo_sess;
+      PreparedStatement stat = con.prepareStatement(query);
+      stat.setString(2, u.email);
+      stat.setString(1, "");
+      return;
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.out.println("Opening connection unsuccessful!");
+    }
+    return;
+  }
+
+  /**
    * Update the database for registration status to True for a user.
    * 
    * @param uemail user email
@@ -283,7 +316,7 @@ public class DataStart {
       String query = Queries.q_notes_heads;
       PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, n.email);
-      stat.setString(2, n.sess);
+      stat.setString(2, "");
 
       System.out.printf("[web_notes storage notes] getting the heads of user \"%s\"\n", n.email);
       return stat.executeQuery();
@@ -315,7 +348,7 @@ public class DataStart {
       String query = Queries.q_notes_get;
       PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, n.email);
-      stat.setString(2, n.sess);
+      stat.setString(2, "");
       stat.setInt(3, Integer.parseInt(n.note_id));
 
       System.out.printf("[web_notes storage notes] getting the contents of user \"%s\" note=\"%s\"\n", n.email,

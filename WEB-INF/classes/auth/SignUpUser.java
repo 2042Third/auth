@@ -50,6 +50,7 @@ public class SignUpUser extends User {
     if (check_user_exist(userinfo_.email)) {
       respond_user_fail();
     } else {
+      userinfo_.reg_key = reg_key;
       respond_user();
 
       DataStart.register_user(userinfo_);

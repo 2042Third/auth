@@ -8,6 +8,11 @@ package storage;
 public class Queries {
         public static String q_userinfo_reg = "select name, email, creation from userinfo where register_key = ?";
         public static String q_userinfo_login = "select name, email, creation, registered from userinfo where email = ? and spw = ?;";
+        public static String u_userinfo_sess = "insert into sessions (userid, key) "
+                        + "select u.id , ?  from "
+                        + "userinfo u "
+                        + " where u.email = ? "
+                        + " ;";
         public static String u_userinfo_reg = "update userinfo set registered = ? where email = ?;";
         public static String q_userinfo_check = "select 1 from userinfo where email = lower(?);";
         public static String u_userinfo_chpw = "update userinfo set spw = ? where email = ?;";
@@ -35,13 +40,13 @@ public class Queries {
                         + " from userinfo u, notes n, sessions s"
                         + " where u.email = ?"
                         + " and s.key = ?"
-                        + " and u.id = s.userid and u.id = n.userid;";
+                        + " and u.id = s.userid and u.id = n.userid group by noteid;";
         public static String q_notes_get = "select  n.content content, n.heading head, EXTRACT(EPOCH FROM n.time) time, EXTRACT(EPOCH FROM n.update_time) update_time, n.h h, n.noteid noteid"
                         + " from userinfo u, notes n, sessions s"
                         + " where u.email = ?"
                         + " and s.key = ?"
                         + " and n.noteid = ?"
-                        + " and u.id = s.userid and u.id = n.userid;";
+                        + " and u.id = s.userid and u.id = n.userid group by noteid;";
         // String registerquery = "INSERT INTO userinfo(name, spw, creation, product,
         // email, register_key, logs) VALUES(?, ?, ?, ?, ?, ?, ?) ON CONFLICT (id) DO
         // UPDATE SET txt = EXCLUDED.txt;";
