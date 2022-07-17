@@ -84,7 +84,7 @@ public class SignInUser extends User {
             auserinfo_.email,
             auserinfo_.creation_time,
             auserinfo_.reg_status);
-
+        break;
       }
       DataStart.u_userinfo_sess(au);
     } catch (Exception e) {

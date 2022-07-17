@@ -102,11 +102,12 @@ public class DataStart {
           dbstorel,
           dbstoren,
           dbstorep);
-      System.out.printf("[postgresql] checking \n", u.email);
+      System.out.printf("[postgresql] checking \"%s\"\n", u.email);
       String query = Queries.u_userinfo_sess;
       PreparedStatement stat = con.prepareStatement(query);
-      stat.setString(2, u.email);
       stat.setString(1, "");
+      stat.setString(2, u.email);
+      stat.executeUpdate(); // added 7/17, this didn't exist and caused a user to not have generated session keys.
       return;
     } catch (Exception e) {
       e.printStackTrace();
