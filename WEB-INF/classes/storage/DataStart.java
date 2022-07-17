@@ -314,6 +314,7 @@ public class DataStart {
           dbstoren,
           dbstorep);
       String query = Queries.q_notes_heads;
+      System.out.printf("[web_notes storage notes] heads storage query string %s\n", Queries.q_notes_heads);
       PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, n.email);
       stat.setString(2, "");
