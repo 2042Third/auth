@@ -37,7 +37,6 @@ public class DataStart {
       String query = Queries.q_userinfo_reg;
       PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, reg_key);
-
       System.out.println("[web_notes storage] success query for db");
       // ResultSet rs = stat.executeQuery();
       return stat.executeQuery();
@@ -177,19 +176,16 @@ public class DataStart {
 
   /**
    * Updates the db when new user is added
-   * 
-   * @param uname   user name
-   * @param umail   user email
-   * @param upw     user password
-   * @param prod    creation time
-   * @param reg_key registration key
+   * @param u userinfo object
+   * param uname   user name
+   * param umail   user email
+   * param upw     user password
+   * param prod    creation time
+   * param reg_key registration key
    */
   public static void register_user(userinfo u) {
 
-    // public static void register_user(String uname, String umail, String upw,
-    // String prod, String reg_key) {
     Date date = new Date();
-    // Preferences node = Preferences.userNodeForPackage(this.getClass());
     try {
       Class.forName("org.postgresql.Driver");
     } catch (Exception e) {
@@ -201,7 +197,6 @@ public class DataStart {
           dbstoren,
           dbstorep);
       String query = Queries.register_user;
-
       PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, u.name);
       stat.setString(2, u.pass);
@@ -213,7 +208,6 @@ public class DataStart {
       stat.setString(8, u.reg_key);
       // ResultSet rs = stat.executeQuery();
       stat.executeUpdate();
-
       System.out.println("[web_notes storage] success registeration for db");
     } catch (Exception e) {
       e.printStackTrace();
@@ -253,7 +247,6 @@ public class DataStart {
       stat.setString(2, n.hash);
       stat.setString(3, SHA3.get_sha3A(n.content));
       stat.setString(4, n.email);
-
       System.out.printf("[web_notes storage notes] new note added for user email \"%s\"\n", n.email);
       return stat.executeQuery();
       // stat.executeUpdate();
