@@ -21,7 +21,22 @@ public class SignInUser extends User {
     userinfo_ = new userinfo();
     auserinfo_ = new userinfo();
   }
-
+  /**
+   * Respondes the user of the signin with the session key for next actions
+   *
+   */
+  protected Boolean respond_user_with_sess() {
+    userinfo_.status = "success";
+    if (userinfo_.pass.length()>0){
+      String sess = Codes.sess_rand_upw(userinfo_.pass); // generates the session key
+      DataStart.u_userinfo_sess(userinfo_);
+      userinfo_ = auserinfo_;
+      userinfo_.sess = sess;
+      System.out.printf("[Auth SignIn] User signin success, %s, session key made \"%s\".\n",userinfo_.email,userinfo_.sess);
+      respond_user();
+    }
+    return true;
+  }
   /**
    * Connnects to the Database for checking if the given credentials exists in the
    * database; respondes accordingly to the outcome of the query.
@@ -38,11 +53,13 @@ public class SignInUser extends User {
       System.out.println("[Auth SignIn] " + date.getTime() + "");
       if (auserinfo_.reg_status.equals("1")) {
         System.out.printf("[Auth SignIn] Registered user \"%s\" sign in\n", auserinfo_.name);
-        userinfo_ = auserinfo_;
 
-        respond_user();
+
+        respond_user_with_sess();
       } else {
         System.out.printf("[Auth SignIn] Unregistered user \"%s\" sign in\n", auserinfo_.name);
+        userinfo_.statusInfo = "unregistered_user";
+        respond_user_fail(); // from the next "else" statement
       }
       System.out.printf("[Auth SignIn] User sign in: email \"%s\", creation date \"%s\", user name : \"%s\"\n\n",
           auserinfo_.email,
@@ -50,6 +67,7 @@ public class SignInUser extends User {
     } else {
       System.out.printf("[Auth SignIn] Failure User sign in: email \"%s\", pswd \"%s\"\n\n", userinfo_.email,
           userinfo_.pass);
+      userinfo_.statusInfo = "does_not_exist";
       respond_user_fail();
     }
   }
@@ -69,6 +87,11 @@ public class SignInUser extends User {
 
   }
 
+  /**
+   * Get information from database and checks the input userinfo.
+   * @param au authenticating user
+   * @return check status; boolean true for success, else false
+   * */
   private Boolean check_user_login(userinfo au) {
     ResultSet rs = DataStart.q_userinfo_login(au);
     Boolean rt = false;
@@ -86,7 +109,6 @@ public class SignInUser extends User {
             auserinfo_.reg_status);
         break;
       }
-      DataStart.u_userinfo_sess(au);
     } catch (Exception e) {
       System.out.println("[Auth SignIn Check User login] SQL no result in query or failure happened ");
     }

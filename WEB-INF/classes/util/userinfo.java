@@ -6,6 +6,7 @@ public class userinfo {
   public String sess;
   public String name;
   public String status;
+  public String statusInfo;
   public String time;
   public String reg_key;
   public String reg_status;

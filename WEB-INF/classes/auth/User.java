@@ -15,22 +15,11 @@ import util.userinfo;
 public class User {
   Date date = new Date();
   protected userinfo userinfo_;
-  // protected String uemail;
-  // protected String upass;
   protected PrintWriter out;
   Map<String, Object> json_data;
   protected String sender = "server";
   protected String user_type = "none";
 
-  // Signin specific
-  // protected String acreation = "";
-  // protected String auser = "";
-  // protected String aemail = "";
-  // protected String areg_status = "";
-  // protected String asession = "session-placeholder";
-
-  // Signup specific
-  // protected String uname = "";
   protected String from = "";
 
   /**
@@ -43,7 +32,7 @@ public class User {
 
   /**
    * Respondes the user of the signin
-   * 
+   *
    */
   protected Boolean respond_user() {
     userinfo_.status = "success";
@@ -52,7 +41,20 @@ public class User {
     return true;
   }
 
+  /**
+   * Response to the incoming user a failure, not specifying the reason.
+   * */
   protected Boolean respond_user_fail() {
+    userinfo_.status = "fail";
+    String res_str = JSONParse.json_request(user_type, sender, userinfo_);
+    out.print(res_str);
+    return true;
+  }
+  /**
+   * Response to the incoming user a failure, including the reason.
+   * @param reason the cause for the failure of the action
+   * */
+  protected Boolean respond_user_fail(String reason) {
     userinfo_.status = "fail";
     String res_str = JSONParse.json_request(user_type, sender, userinfo_);
     out.print(res_str);
