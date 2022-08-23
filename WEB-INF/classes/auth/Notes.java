@@ -37,9 +37,7 @@ public class Notes extends HttpServlet {
     }
     System.out.printf("[Note] new request:\"%s\"\n", data);
     usr_.parse_json(data);
-    usr_.enable_debug(); // DEBUG ONLY, REMOVE WHEN PRODUCTION
     usr_.resolve_action();
-
   }
 
   /**

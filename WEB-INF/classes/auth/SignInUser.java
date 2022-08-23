@@ -29,9 +29,10 @@ public class SignInUser extends User {
     userinfo_.status = "success";
     if (userinfo_.pass.length()>0){
       String sess = Codes.sess_rand_upw(userinfo_.pass); // generates the session key
+      userinfo_.sess = sess;
       DataStart.u_userinfo_sess(userinfo_);
       userinfo_ = auserinfo_;
-      userinfo_.sess = sess;
+      userinfo_.sess = sess; // updates the latest userinfo with the new session key
       System.out.printf("[Auth SignIn] User signin success, %s, session key made \"%s\".\n",userinfo_.email,userinfo_.sess);
       respond_user();
     }
@@ -102,6 +103,7 @@ public class SignInUser extends User {
         auserinfo_.email = rs.getString("email");
         auserinfo_.creation_time = rs.getString("creation");
         auserinfo_.reg_status = rs.getString("registered");
+        auserinfo_.sess = rs.getString("sess");
         System.out.printf("[Auth SignIn Check User login] query result: %s, %s, %s, %s\n",
             auserinfo_.name,
             auserinfo_.email,

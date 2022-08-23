@@ -133,6 +133,8 @@ public final class JSONParse {
     jobj.put("time", u.creation_time);
     jobj.put("email", u.email);
     jobj.put("status", u.status);
+    jobj.put("statusInfo", u.statusInfo);
+    jobj.put("sess", u.sess);
     return jsts(jobj);
   }
 

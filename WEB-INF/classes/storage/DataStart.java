@@ -82,7 +82,8 @@ public class DataStart {
   }
 
   /**
-   * Query the user info when login
+   * Deletes existing user sessions with the given email, and
+   * update with a new session key.
    * 
    * @param uemail user email
    * @param upass  user password
@@ -102,6 +103,13 @@ public class DataStart {
           dbstoren,
           dbstorep);
       System.out.printf("[postgresql] checking \"%s\"\n", u.email);
+      // Delete existing session key
+      String query_delete_existing = Queries.u_userinfo_sess_delete_existing;
+      PreparedStatement qde = con.prepareStatement(query_delete_existing);
+      qde.setString(1, u.email);
+      qde.executeUpdate(); // Could be changed to log user session key changes, but I shouldn't.
+
+      // Insert new session key
       String query = Queries.u_userinfo_sess;
       PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, u.sess);
@@ -276,7 +284,7 @@ public class DataStart {
         dbstorep);
     String query = Queries.u_notes_update;
     PreparedStatement stat = con.prepareStatement(query);
-    System.out.printf("[web_notes storage notes] making updates content \"%s\"\n", n.content);
+//    System.out.printf("[web_notes storage notes] making updates content \"%s\"\n", n.content);
     stat.setString(1, n.content);
     stat.setInt(4, Integer.parseInt(n.note_id));
     stat.setString(2, n.hash);
@@ -308,10 +316,10 @@ public class DataStart {
           dbstoren,
           dbstorep);
       String query = Queries.q_notes_heads;
-      System.out.printf("[web_notes storage notes] heads storage query string %s\n", Queries.q_notes_heads);
+      System.out.printf("[web_notes storage notes] heads storage query with session key %s\n", n.sess);
       PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, n.email);
-      stat.setString(2, "");
+      stat.setString(2, n.sess);
 
       System.out.printf("[web_notes storage notes] getting the heads of user \"%s\"\n", n.email);
       return stat.executeQuery();
@@ -343,7 +351,7 @@ public class DataStart {
       String query = Queries.q_notes_get;
       PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, n.email);
-      stat.setString(2, "");
+      stat.setString(2, n.sess);
       stat.setInt(3, Integer.parseInt(n.note_id));
 
       System.out.printf("[web_notes storage notes] getting the contents of user \"%s\" note=\"%s\"\n", n.email,
