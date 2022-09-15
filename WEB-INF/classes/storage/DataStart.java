@@ -3,6 +3,7 @@ package storage;
 import util.*;
 import java.sql.*;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Databse interface for pdm
@@ -16,6 +17,54 @@ public class DataStart {
   private static String dbstorep = "16a93646e026f05c4b497e14c921d6b9915263aaa64663039dba8f13181f15e3";
   private static String dbstored = "org.postgresql.Driver";
 
+  private Connection con;
+  /**
+   * Returns a connection
+   * @return connection object
+   *
+   * */
+  public static Connection prepare_db() {
+    try {
+      Class.forName(dbstored);
+    } catch (Exception e) {
+      System.out.printf(" \"%s\" driver not found.\n", dbstored);
+    }
+    try {
+      return DriverManager.getConnection(
+              dbstorel,
+              dbstoren,
+              dbstorep);
+    }
+    catch (SQLTimeoutException e) {
+      e.printStackTrace();
+      System.out.println("[web_notes storage] Sql timeout exception!");
+    }
+    catch (SQLException e) {
+      e.printStackTrace();
+      System.out.println("[web_notes storage] Sql exception!");
+    }
+    return null;
+  }
+
+  /**
+   * Prepare the input query string.
+   * @param query query string
+   * @return A prepared statement object
+   *
+   * */
+  public static PreparedStatement prepare_statement(String query) {
+    try {
+      return Objects.requireNonNull(prepare_db()).prepareStatement(query);
+    }
+    catch (SQLException e) {
+
+      e.printStackTrace();
+      System.out.println("[web_notes storage] Sql Query exception when preparing statement!");
+    }
+    return null;
+  }
+
+
   /**
    * Query the user info when register
    * 
@@ -23,27 +72,17 @@ public class DataStart {
    * @return a ResultSet
    */
   public static ResultSet q_userinfo_reg(String reg_key) {
-    // Preferences node = Preferences.userNodeForPackage(this.getClass());
+
     try {
-      Class.forName(dbstored);
-    } catch (Exception e) {
-      System.out.printf(" \"%s\" driver not found.\n", dbstored);
-    }
-    try {
-      Connection con = DriverManager.getConnection(
-          dbstorel,
-          dbstoren,
-          dbstorep);
       String query = Queries.q_userinfo_reg;
-      PreparedStatement stat = con.prepareStatement(query);
+      PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
       stat.setString(1, reg_key);
       System.out.println("[web_notes storage] success query for db");
       // ResultSet rs = stat.executeQuery();
       return stat.executeQuery();
-
     } catch (Exception e) {
       e.printStackTrace();
-      System.out.println("Opening connection unsuccessful!");
+      System.out.println("[web_notes storage] SQL query execution failure");
     }
     return null;
   }
@@ -57,26 +96,17 @@ public class DataStart {
    *         registration status
    */
   public static ResultSet q_userinfo_login(userinfo u) {
-    // Preferences node = Preferences.userNodeForPackage(this.getClass());
     try {
-      Class.forName("org.postgresql.Driver");
-    } catch (Exception e) {
-      System.out.println("postgresql driver not found.");
-    }
-    try {
-      Connection con = DriverManager.getConnection(
-          dbstorel,
-          dbstoren,
-          dbstorep);
       System.out.printf("[postgresql] checking signin for email: %s and input pssword\n", u.email);
       String query = Queries.q_userinfo_login;
-      PreparedStatement stat = con.prepareStatement(query);
+      PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
+//      PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, u.email);
       stat.setString(2, u.pass);
       return stat.executeQuery();
     } catch (Exception e) {
       e.printStackTrace();
-      System.out.println("Opening connection unsuccessful!");
+      System.out.println("[web_notes storage] SQL query execution failure");
     }
     return null;
   }
@@ -91,27 +121,19 @@ public class DataStart {
    *         registration status
    */
   public static void u_userinfo_sess(userinfo u) {
-    // Preferences node = Preferences.userNodeForPackage(this.getClass());
     try {
-      Class.forName("org.postgresql.Driver");
-    } catch (Exception e) {
-      System.out.println("postgresql driver not found.");
-    }
-    try {
-      Connection con = DriverManager.getConnection(
-          dbstorel,
-          dbstoren,
-          dbstorep);
       System.out.printf("[postgresql] checking \"%s\"\n", u.email);
       // Delete existing session key
       String query_delete_existing = Queries.u_userinfo_sess_delete_existing;
-      PreparedStatement qde = con.prepareStatement(query_delete_existing);
+      PreparedStatement qde = Objects.requireNonNull(prepare_statement(query_delete_existing));
+//      PreparedStatement qde = con.prepareStatement(query_delete_existing);
       qde.setString(1, u.email);
       qde.executeUpdate(); // Could be changed to log user session key changes, but I shouldn't.
 
       // Insert new session key
       String query = Queries.u_userinfo_sess;
-      PreparedStatement stat = con.prepareStatement(query);
+      PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
+//      PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, u.sess);
       stat.setString(2, u.email);
       stat.executeUpdate(); // added 7/17, this didn't exist and caused a user to not have generated session keys.
@@ -130,17 +152,9 @@ public class DataStart {
    */
   public static void u_userinfo_reg(String uemail) {
     try {
-      Class.forName("org.postgresql.Driver");
-    } catch (Exception e) {
-      System.out.println("postgresql driver not found.");
-    }
-    try {
-      Connection con = DriverManager.getConnection(
-          dbstorel,
-          dbstoren,
-          dbstorep);
       String query = Queries.u_userinfo_reg;
-      PreparedStatement stat = con.prepareStatement(query);
+      PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
+//      PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, "1");
       stat.setString(2, uemail);
 
@@ -161,18 +175,10 @@ public class DataStart {
    */
   public static ResultSet q_userinfo_check(userinfo u) {
     try {
-      Class.forName("org.postgresql.Driver");
-    } catch (Exception e) {
-      System.out.println("postgresql driver not found.");
-    }
-    try {
-      Connection con = DriverManager.getConnection(
-          dbstorel,
-          dbstoren,
-          dbstorep);
       System.out.printf("[postgresql] checking signin for email: %s\n", u.email);
       String query = Queries.q_userinfo_check;
-      PreparedStatement stat = con.prepareStatement(query);
+      PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
+//      PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, u.email);
       return stat.executeQuery();
     } catch (Exception e) {
@@ -195,17 +201,9 @@ public class DataStart {
 
     Date date = new Date();
     try {
-      Class.forName("org.postgresql.Driver");
-    } catch (Exception e) {
-      System.out.println("postgresql driver not found.");
-    }
-    try {
-      Connection con = DriverManager.getConnection(
-          dbstorel,
-          dbstoren,
-          dbstorep);
       String query = Queries.register_user;
-      PreparedStatement stat = con.prepareStatement(query);
+      PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
+//      PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, u.name);
       stat.setString(2, u.pass);
       stat.setString(3, date.getTime() + "");
@@ -240,17 +238,9 @@ public class DataStart {
    */
   public static ResultSet u_notes_new(note n) {
     try {
-      Class.forName("org.postgresql.Driver");
-    } catch (Exception e) {
-      System.out.println("postgresql driver not found.");
-    }
-    try {
-      Connection con = DriverManager.getConnection(
-          dbstorel,
-          dbstoren,
-          dbstorep);
       String query = Queries.u_notes_new;
-      PreparedStatement stat = con.prepareStatement(query);
+      PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
+//      PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, n.content);
       stat.setString(2, n.hash);
       stat.setString(3, SHA3.get_sha3A(n.content));
@@ -273,17 +263,10 @@ public class DataStart {
    * @param unoteid  ID of the note being updated
    */
   public static void u_notes_update(note n) throws SQLException {
-    try {
-      Class.forName(dbstored);
-    } catch (Exception e) {
-      System.out.println("postgresql driver not found.");
-    }
-    Connection con = DriverManager.getConnection(
-        dbstorel,
-        dbstoren,
-        dbstorep);
+
     String query = Queries.u_notes_update;
-    PreparedStatement stat = con.prepareStatement(query);
+    PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
+//    PreparedStatement stat = con.prepareStatement(query);
 //    System.out.printf("[web_notes storage notes] making updates content \"%s\"\n", n.content);
     stat.setString(1, n.content);
     stat.setInt(4, Integer.parseInt(n.note_id));
@@ -306,18 +289,10 @@ public class DataStart {
    */
   public static ResultSet q_notes_heads(note n) {
     try {
-      Class.forName("org.postgresql.Driver");
-    } catch (Exception e) {
-      System.out.println("postgresql driver not found.");
-    }
-    try {
-      Connection con = DriverManager.getConnection(
-          dbstorel,
-          dbstoren,
-          dbstorep);
       String query = Queries.q_notes_heads;
       System.out.printf("[web_notes storage notes] heads storage query with session key %s\n", n.sess);
-      PreparedStatement stat = con.prepareStatement(query);
+      PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
+//      PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, n.email);
       stat.setString(2, n.sess);
 
@@ -339,17 +314,9 @@ public class DataStart {
    */
   public static ResultSet q_notes_get(note n) {
     try {
-      Class.forName("org.postgresql.Driver");
-    } catch (Exception e) {
-      System.out.println("postgresql driver not found.");
-    }
-    try {
-      Connection con = DriverManager.getConnection(
-          dbstorel,
-          dbstoren,
-          dbstorep);
       String query = Queries.q_notes_get;
-      PreparedStatement stat = con.prepareStatement(query);
+      PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
+//      PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, n.email);
       stat.setString(2, n.sess);
       stat.setInt(3, Integer.parseInt(n.note_id));
