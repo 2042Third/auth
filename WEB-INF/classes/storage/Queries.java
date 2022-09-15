@@ -44,12 +44,16 @@ public class Queries {
                         + " where u.email = ? "
                         + " returning noteid;";
         public static String u_notes_update = "update notes "
-                        + " set content = ? "
-                        + ", h = ? "
-                        + ", intgrh = ? "
-                        + ", heading = ?"
-                        + ", update_time = CURRENT_TIMESTAMP "
-                        + " where noteid = ?;";
+                + " set content = ? "
+                + ", h = ? "
+                + ", intgrh = ? "
+                + ", heading = ?"
+                + ", update_time = CURRENT_TIMESTAMP "
+                + " where noteid = ?;";
+        public static String u_notes_delete = "update notes "
+                + " set deleted = ? "
+                + ", update_time = CURRENT_TIMESTAMP "
+                + " where noteid = ?;";
         public static String q_notes_heads = "select n.heading head, EXTRACT(EPOCH FROM n.time) time, EXTRACT(EPOCH FROM n.update_time) update_time, n.h h, n.noteid noteid"
                         + " from userinfo u, notes n, sessions s"
                         + " where u.email = ?"
