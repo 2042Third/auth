@@ -99,6 +99,20 @@ public class NotesUser extends User {
       out.print(res_str);
       System.out.printf("[Note User] request complete retrieve from user=%s\n ", requests.email);
     }
+    // Delete anote
+    else if (requests.ntype.equals("delete")) {
+      System.out.printf("[Note User] request delete note=%s\n", requests.username);
+      try {
+        DataStart.u_notes_delete(requests);
+      } catch (SQLException e) {
+        requests.status = "fail";
+        System.out.println("[Note User] Update failure, no action performed.");
+        e.printStackTrace();
+      }
+      String res_str = JSONParse.note_request(requests);
+      out.print(res_str);
+      System.out.printf("[Note User] delete request complete update user=%s\n ", requests.email);
+    }
   }
 
   /**

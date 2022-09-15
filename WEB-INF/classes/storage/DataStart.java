@@ -257,7 +257,7 @@ public class DataStart {
 
   /**
    * Updates a existing note, where the client has the id of the note
-   * 
+   *
    * @param ucontent The content of the note
    * @param uhash    Hash of the unencrypted note
    * @param unoteid  ID of the note being updated
@@ -276,6 +276,25 @@ public class DataStart {
     stat.setInt(5, Integer.parseInt(n.note_id));
 
     System.out.printf("[web_notes storage notes] making updates to \"%s\"\n", n.note_id);
+    // ResultSet rs = stat.executeQuery();
+    stat.executeUpdate();
+
+  }
+  /**
+   * Set a note deleted
+   *
+   * @param n note object
+   */
+  public static void u_notes_delete(note n) throws SQLException {
+
+    String query = Queries.u_notes_delete;
+    PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
+//    PreparedStatement stat = con.prepareStatement(query);
+//    System.out.printf("[web_notes storage notes] making updates content \"%s\"\n", n.content);
+    stat.setInt(1, 1);
+    stat.setInt(2, Integer.parseInt(n.note_id));
+
+    System.out.printf("[web_notes storage notes] note deleted to \"%s\"\n", n.note_id);
     // ResultSet rs = stat.executeQuery();
     stat.executeUpdate();
 
