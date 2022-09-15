@@ -60,6 +60,7 @@ public class Queries {
                         + " and s.key = ?"
                         + " and u.id = s.userid"
                         + " and u.id = n.userid"
+                        + " and n.deleted = 0"
                         + " group by noteid;";
         public static String q_notes_get = "select  n.content content, n.heading head, EXTRACT(EPOCH FROM n.time) time, EXTRACT(EPOCH FROM n.update_time) update_time, n.h h, n.noteid noteid"
                         + " from userinfo u, notes n, sessions s"
