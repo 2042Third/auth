@@ -1,1 +1,1 @@
-jar cvf ../auth.war WEB-INF/* resc/* META-INF/* 
+jar cvf ../auth.war WEB-INF/* resc/* META-INF/* !(WEB-INF/pdm-crypt-module/.)
