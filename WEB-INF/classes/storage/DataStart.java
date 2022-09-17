@@ -263,11 +263,8 @@ public class DataStart {
    * @param unoteid  ID of the note being updated
    */
   public static ResultSet u_notes_update(note n) throws SQLException {
-
     String query = Queries.u_notes_update;
     PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
-//    PreparedStatement stat = con.prepareStatement(query);
-//    System.out.printf("[web_notes storage notes] making updates content \"%s\"\n", n.content);
     stat.setString(1, n.content);
     stat.setInt(4, Integer.parseInt(n.note_id));
     stat.setString(2, n.hash);
@@ -276,9 +273,7 @@ public class DataStart {
     stat.setInt(5, Integer.parseInt(n.note_id));
 
     System.out.printf("[web_notes storage notes] making updates to \"%s\"\n", n.note_id);
-     ResultSet rs = stat.executeQuery();
-//    stat.executeUpdate();
-    return rs;
+    return stat.executeQuery();
   }
   /**
    * Set a note deleted
@@ -289,8 +284,6 @@ public class DataStart {
 
     String query = Queries.u_notes_delete;
     PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
-//    PreparedStatement stat = con.prepareStatement(query);
-//    System.out.printf("[web_notes storage notes] making updates content \"%s\"\n", n.content);
     stat.setInt(1, 1);
     stat.setInt(2, Integer.parseInt(n.note_id));
 

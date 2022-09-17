@@ -49,8 +49,9 @@ public class Queries {
                 + ", intgrh = ? "
                 + ", heading = ?"
                 + ", update_time = CURRENT_TIMESTAMP "
-                + " where noteid = ? " +
-                " returning update_time;";
+                + " where noteid = ? "
+                + " returning EXTRACT(EPOCH FROM update_time) update_time" +
+                ", EXTRACT(EPOCH FROM time) time;";
         public static String u_notes_delete = "update notes "
                 + " set deleted = ? "
                 + ", update_time = CURRENT_TIMESTAMP "

@@ -119,7 +119,7 @@ public class NotesUser extends User {
    */
   protected void process_note_update() throws SQLException {
 
-    note update_stat = parse_note_return(DataStart.u_notes_update(requests));
+    note update_stat = extract_time_return(DataStart.u_notes_update(requests));
     requests.update_time = update_stat.update_time;
     requests.time = update_stat.time;
   }
@@ -181,7 +181,22 @@ public class NotesUser extends User {
       requests.status = "fail";
     }
   }
+  private note extract_time_return (ResultSet rs){
+    note rt = new note();
+    try {
+      while (rs.next()) {
+        rt.update_time = rs.getString("update_time");
+        rt.time = rs.getString("time");
 
+      }
+      return rt;
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.out.println("[Note User] SQL no result in query or failure happened ");
+      rt.status = "fail";
+      return rt;
+    }
+  }
   private note parse_note_return (ResultSet rs){
     note rt = new note();
     try {
@@ -197,6 +212,7 @@ public class NotesUser extends User {
       }
       return rt;
     } catch (Exception e) {
+      e.printStackTrace();
       System.out.println("[Note User] SQL no result in query or failure happened ");
       rt.status = "fail";
       return rt;
