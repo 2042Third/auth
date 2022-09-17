@@ -1,4 +1,5 @@
 import os
+from os.path import exists
 
 def get_dir(a="./"):
   return [a+i for i in os.listdir(a)]
@@ -14,7 +15,7 @@ def compile(a,b="./WEB-INF"):
   # return
   os.system(c)
 
-def compile_dir(a):
+def compile_dir(a, excludes):
   if(a[-1]!="/"):
     a=a+"/"
   print("compile: "+a)
@@ -37,7 +38,20 @@ def compile_dir(a):
       if i[-4:]=='java':
         compile(i)
     else:
-      compile_dir(i)
+      if os.path.basename(i) not in excludes:
+        compile_dir(i,excludes)
+
+def setup_exclusions():
+  exclusions = []
+  exclusion_file = './.pdmdevconf'
+  if(os.path.exists(exclusion_file)):
+    file = open(exclusion_file,'r')
+    lines = file.readlines()
+    for line in lines:
+      exclusions.append(line.strip())
+  return exclusions
 
 if __name__ == '__main__':
-  compile_dir("./WEB-INF/classes")
+  excludes = setup_exclusions()
+  print('excluding folders: %s' % (excludes));
+  compile_dir("./WEB-INF/classes",excludes)

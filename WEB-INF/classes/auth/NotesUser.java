@@ -1,6 +1,5 @@
 package auth;
 
-import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -68,7 +67,7 @@ public class NotesUser extends User {
     // Update Note
     else if (requests.ntype.equals("update")) {
       try {
-        DataStart.u_notes_update(requests);
+        process_note_update();
       } catch (SQLException e) {
         requests.status = "fail";
         System.out.println("[Note User] Update failure, no action performed.");
@@ -114,7 +113,16 @@ public class NotesUser extends User {
       System.out.printf("[Note User] delete request complete update user=%s\n ", requests.email);
     }
   }
+  /**
+   * Reads and updates the request note object
+   *
+   */
+  protected void process_note_update() throws SQLException {
 
+    note update_stat = parse_note_return(DataStart.u_notes_update(requests));
+    requests.update_time = update_stat.update_time;
+    requests.time = update_stat.time;
+  }
   /**
    * Respondes the user of the note request
    * 
@@ -174,4 +182,24 @@ public class NotesUser extends User {
     }
   }
 
+  private note parse_note_return (ResultSet rs){
+    note rt = new note();
+    try {
+      while (rs.next()) {
+        rt.content = rs.getString("content");
+        rt.head = rs.getString("head");
+        rt.time = rs.getString("time");
+        rt.update_time = rs.getString("update_time");
+        rt.unencrypted_hash = rs.getString("h");
+        rt.note_id = rs.getString("noteid");
+        System.out.printf("[Note User] query retrieve result: note_id's=%s\n",
+                rt.note_id);
+      }
+      return rt;
+    } catch (Exception e) {
+      System.out.println("[Note User] SQL no result in query or failure happened ");
+      rt.status = "fail";
+      return rt;
+    }
+  }
 }

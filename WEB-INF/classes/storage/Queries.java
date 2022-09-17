@@ -49,7 +49,8 @@ public class Queries {
                 + ", intgrh = ? "
                 + ", heading = ?"
                 + ", update_time = CURRENT_TIMESTAMP "
-                + " where noteid = ?;";
+                + " where noteid = ? " +
+                " returning update_time;";
         public static String u_notes_delete = "update notes "
                 + " set deleted = ? "
                 + ", update_time = CURRENT_TIMESTAMP "

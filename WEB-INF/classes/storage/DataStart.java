@@ -262,7 +262,7 @@ public class DataStart {
    * @param uhash    Hash of the unencrypted note
    * @param unoteid  ID of the note being updated
    */
-  public static void u_notes_update(note n) throws SQLException {
+  public static ResultSet u_notes_update(note n) throws SQLException {
 
     String query = Queries.u_notes_update;
     PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
@@ -276,9 +276,9 @@ public class DataStart {
     stat.setInt(5, Integer.parseInt(n.note_id));
 
     System.out.printf("[web_notes storage notes] making updates to \"%s\"\n", n.note_id);
-    // ResultSet rs = stat.executeQuery();
-    stat.executeUpdate();
-
+     ResultSet rs = stat.executeQuery();
+//    stat.executeUpdate();
+    return rs;
   }
   /**
    * Set a note deleted
