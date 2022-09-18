@@ -245,6 +245,7 @@ public class DataStart {
       stat.setString(2, n.hash);
       stat.setString(3, SHA3.get_sha3A(n.content));
       stat.setString(4, n.email);
+      stat.setString(5, n.sess);
       System.out.printf("[web_notes storage notes] new note added for user email \"%s\"\n", n.email);
       return stat.executeQuery();
       // stat.executeUpdate();

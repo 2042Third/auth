@@ -40,8 +40,10 @@ public class Queries {
                         + "ON CONFLICT (email) DO UPDATE SET register_key = ?;";
         public static String u_notes_new = "insert into notes(userid, content, h, intgrh) "
                         + "select u.id , ? , ?, ? from "
-                        + "userinfo u "
+                        + "userinfo u, sessions s "
                         + " where u.email = ? "
+                        + " and u.id = s.userid "
+                        + " and s.key = ? "
                         + " returning noteid;";
         public static String u_notes_update = "update notes "
                 + " set content = ? "
