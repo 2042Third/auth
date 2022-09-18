@@ -49,13 +49,19 @@ public class Queries {
                 + ", intgrh = ? "
                 + ", heading = ?"
                 + ", update_time = CURRENT_TIMESTAMP "
+                + " from sessions s "
                 + " where noteid = ? "
-                + " returning EXTRACT(EPOCH FROM update_time) update_time" +
-                ", EXTRACT(EPOCH FROM time) time;";
+                + " and  s.userid = notes.userid "
+                + " and s.key = ?"
+                + " returning EXTRACT(EPOCH FROM notes.update_time) update_time"
+                + ", EXTRACT(EPOCH FROM notes.time) time;";
         public static String u_notes_delete = "update notes "
                 + " set deleted = ? "
                 + ", update_time = CURRENT_TIMESTAMP "
-                + " where noteid = ?;";
+                + " from sessions s "
+                + " where noteid = ? "
+                + " and s.userid = notes.userid "
+                + " and s.key = ?;";
         public static String q_notes_heads = "select n.heading head, EXTRACT(EPOCH FROM n.time) time, EXTRACT(EPOCH FROM n.update_time) update_time, n.h h, n.noteid noteid"
                         + " from userinfo u, notes n, sessions s"
                         + " where u.email = ?"
@@ -69,7 +75,8 @@ public class Queries {
                         + " where u.email = ?"
                         + " and s.key = ?"
                         + " and n.noteid = ?"
-                        + " and u.id = s.userid and u.id = n.userid group by noteid;";
+                        + " and u.id = s.userid "
+                +"and u.id = n.userid group by noteid;";
         // String registerquery = "INSERT INTO userinfo(name, spw, creation, product,
         // email, register_key, logs) VALUES(?, ?, ?, ?, ?, ?, ?) ON CONFLICT (id) DO
         // UPDATE SET txt = EXCLUDED.txt;";

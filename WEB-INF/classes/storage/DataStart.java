@@ -271,8 +271,10 @@ public class DataStart {
     stat.setString(3, SHA3.get_sha3(n.content));
     stat.setString(4, n.head);
     stat.setInt(5, Integer.parseInt(n.note_id));
+    stat.setString(6, n.sess);
 
     System.out.printf("[web_notes storage notes] making updates to \"%s\"\n", n.note_id);
+    System.out.printf("[web_notes storage notes] making updates query \"%s\"\n", query);
     return stat.executeQuery();
   }
   /**
@@ -284,8 +286,9 @@ public class DataStart {
 
     String query = Queries.u_notes_delete;
     PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
-    stat.setInt(1, 1);
+    stat.setInt(1, 1); // 1 for delete; 0 for none;
     stat.setInt(2, Integer.parseInt(n.note_id));
+    stat.setString(3, n.sess);
 
     System.out.printf("[web_notes storage notes] note deleted to \"%s\"\n", n.note_id);
     // ResultSet rs = stat.executeQuery();
