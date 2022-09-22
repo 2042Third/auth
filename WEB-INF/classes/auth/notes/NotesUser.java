@@ -1,9 +1,11 @@
-package auth;
+package auth.notes;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
+
+import auth.User;
 import util.*;
 
 import storage.DataStart;

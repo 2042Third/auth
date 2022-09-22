@@ -13,10 +13,10 @@ import util.userinfo;
  * @author Yi Yang
  */
 public class User {
-  Date date = new Date();
+  protected Date date = new Date();
   protected userinfo userinfo_;
   protected PrintWriter out;
-  Map<String, Object> json_data;
+  protected Map<String, Object> json_data;
   protected String sender = "server";
   protected String user_type = "none";
 

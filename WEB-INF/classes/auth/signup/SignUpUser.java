@@ -1,7 +1,9 @@
-package auth;
+package auth.signup;
 
 import java.sql.ResultSet;
 
+import auth.Codes;
+import auth.User;
 import storage.DataStart;
 import util.JSONParse;
 import util.SendMail;

@@ -1,4 +1,4 @@
-package auth;
+package auth.signup;
 
 import java.io.*;
 import jakarta.servlet.*;

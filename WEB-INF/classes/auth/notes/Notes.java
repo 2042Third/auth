@@ -3,7 +3,7 @@
  * for pdm notes
  * 05/20/2022
  * */
-package auth;
+package auth.notes;
 
 import java.io.*;
 import jakarta.servlet.*;
