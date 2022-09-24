@@ -19,7 +19,6 @@ public class User {
   protected Map<String, Object> json_data;
   protected String sender = "server";
   protected String user_type = "none";
-
   protected String from = "";
 
   /**
@@ -62,11 +61,7 @@ public class User {
   }
 
   protected boolean is_dynamic_web() {
-    if (this.from.equals("pdm web")) {
-      return true;
-    } else {
-      return false;
-    }
+    return this.from.equals("pdm web");
   }
 
 }
