@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import auth.Action;
 import auth.User;
 import util.*;
 
@@ -15,6 +16,7 @@ public class NotesUser extends User {
 
   private Map<String, Object> json_data;
   private note requests = new note();
+  private Action action = new NotesActionsNew();
   // private PrintWriter out;
 
   /**
@@ -52,67 +54,30 @@ public class NotesUser extends User {
     System.out.printf("[Note User] request resolving user=%s\n", requests.username);
     // New Note
     if (requests.ntype.equals("new")) {
-      System.out.printf("[Note User] request new note from user=%s\n", requests.username);
-      ResultSet rs = DataStart.u_notes_new(requests);
-      try {
-        while (rs.next()) {
-          requests.note_id = rs.getString("noteid");
-          System.out.printf("[Note User] query result: note_id=%s\n", requests.note_id);
-        }
-      } catch (Exception e) {
-        System.out.println("[Note User] SQL no result in query or failure happened ");
-      }
-      requests.ntype = "new_return";
-      respond_user_note();
+      action = new NotesActionsNew();
+      action.execute();
     }
 
     // Update Note
     else if (requests.ntype.equals("update")) {
-      try {
-        process_note_update();
-      } catch (SQLException e) {
-        requests.status = "fail";
-        System.out.println("[Note User] Update failure, no action performed.");
-        e.printStackTrace();
-      }
-      String res_str = JSONParse.note_request(requests);
-      out.print(res_str);
-      System.out.printf("[Note User] request complete update user=%s\n ", requests.email);
+      action = new NotesActionUpdate();
+      action.execute();
     }
 
     // Get Heads, not respond function, intigrated instead
     else if (requests.ntype.equals("heads")) {
-      System.out.printf("[Note User] request heads from user=%s\n", requests.username);
-      Object[] nhs = get_notes_heads();
-      requests.ntype = "heads_return";
-      requests.note_id = "listed";
-      requests.unencrypted_hash = "listed";
-      String res_str = JSONParse.note_head_request(requests, nhs);
-      out.print(res_str);
-      System.out.printf("[Note User] request complete heads from user=%s\n ", requests.email);
+      action = new NotesActionHeads();
+      action.execute();
     }
     // Get a note
     else if (requests.ntype.equals("retrieve")) {
-      System.out.printf("[Note User] request retrieve from user=%s\n", requests.username);
-      requests.ntype = "retrieve_return";
-      get_note();
-      String res_str = JSONParse.note_request(requests);
-      out.print(res_str);
-      System.out.printf("[Note User] request complete retrieve from user=%s\n ", requests.email);
+      action = new NotesActionRetrieve();
+      action.execute();
     }
     // Delete anote
     else if (requests.ntype.equals("delete")) {
-      System.out.printf("[Note User] request delete note=%s\n", requests.username);
-      try {
-        DataStart.u_notes_delete(requests);
-      } catch (SQLException e) {
-        requests.status = "fail";
-        System.out.println("[Note User] Update failure, no action performed.");
-        e.printStackTrace();
-      }
-      String res_str = JSONParse.note_request(requests);
-      out.print(res_str);
-      System.out.printf("[Note User] delete request complete update user=%s\n ", requests.email);
+      action = new NotesActionDelete();
+      action.execute();
     }
   }
   /**
@@ -220,4 +185,82 @@ public class NotesUser extends User {
       return rt;
     }
   }
+
+  class NotesActionsNew implements Action {
+    @Override
+    public void execute() {
+      System.out.printf("[Note User] request new note from user=%s\n", requests.username);
+      ResultSet rs = DataStart.u_notes_new(requests);
+      try {
+        while (rs.next()) {
+          requests.note_id = rs.getString("noteid");
+          System.out.printf("[Note User] query result: note_id=%s\n", requests.note_id);
+        }
+      } catch (Exception e) {
+        System.out.println("[Note User] SQL no result in query or failure happened ");
+      }
+      requests.ntype = "new_return";
+      respond_user_note();
+    }
+  }
+
+  class NotesActionUpdate implements Action {
+    @Override
+    public void execute() {
+      try {
+        process_note_update();
+      } catch (SQLException e) {
+        requests.status = "fail";
+        System.out.println("[Note User] Update failure, no action performed.");
+        e.printStackTrace();
+      }
+      String res_str = JSONParse.note_request(requests);
+      out.print(res_str);
+      System.out.printf("[Note User] request complete update user=%s\n ", requests.email);
+    }
+  }
+
+  class NotesActionHeads implements Action {
+    @Override
+    public void execute() {
+      System.out.printf("[Note User] request heads from user=%s\n", requests.username);
+      Object[] nhs = get_notes_heads();
+      requests.ntype = "heads_return";
+      requests.note_id = "listed";
+      requests.unencrypted_hash = "listed";
+      String res_str = JSONParse.note_head_request(requests, nhs);
+      out.print(res_str);
+      System.out.printf("[Note User] request complete heads from user=%s\n ", requests.email);
+    }
+  }
+
+  class NotesActionRetrieve implements Action {
+    @Override
+    public void execute() {
+      System.out.printf("[Note User] request retrieve from user=%s\n", requests.username);
+      requests.ntype = "retrieve_return";
+      get_note();
+      String res_str = JSONParse.note_request(requests);
+      out.print(res_str);
+      System.out.printf("[Note User] request complete retrieve from user=%s\n ", requests.email);
+    }
+  }
+
+  class NotesActionDelete implements Action {
+    @Override
+    public void execute(){
+      System.out.printf("[Note User] request delete note=%s\n", requests.username);
+      try {
+        DataStart.u_notes_delete(requests);
+      } catch (SQLException e) {
+        requests.status = "fail";
+        System.out.println("[Note User] Update failure, no action performed.");
+        e.printStackTrace();
+      }
+      String res_str = JSONParse.note_request(requests);
+      out.print(res_str);
+      System.out.printf("[Note User] delete request complete update user=%s\n ", requests.email);
+    }
+  }
+
 }
