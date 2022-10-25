@@ -57,13 +57,11 @@ public class NotesUser extends User {
       action = new NotesActionsNew();
       action.execute();
     }
-
     // Update Note
     else if (requests.ntype.equals("update")) {
       action = new NotesActionUpdate();
       action.execute();
     }
-
     // Get Heads, not respond function, intigrated instead
     else if (requests.ntype.equals("heads")) {
       action = new NotesActionHeads();
@@ -80,12 +78,12 @@ public class NotesUser extends User {
       action.execute();
     }
   }
+
   /**
    * Reads and updates the request note object
    *
    */
   protected void process_note_update() throws SQLException {
-
     note update_stat = extract_time_return(DataStart.u_notes_update(requests));
     requests.update_time = update_stat.update_time;
     requests.time = update_stat.time;
@@ -154,7 +152,6 @@ public class NotesUser extends User {
       while (rs.next()) {
         rt.update_time = rs.getString("update_time");
         rt.time = rs.getString("time");
-
       }
       return rt;
     } catch (Exception e) {
@@ -185,7 +182,10 @@ public class NotesUser extends User {
       return rt;
     }
   }
-
+  /**
+   * Creates a new note.
+   * Retuning the created note id.
+   * */
   class NotesActionsNew implements Action {
     @Override
     public void execute() {
@@ -203,7 +203,9 @@ public class NotesUser extends User {
       respond_user_note();
     }
   }
-
+  /**
+   * Updates a note. * This action replaces the existing note.
+   * */
   class NotesActionUpdate implements Action {
     @Override
     public void execute() {
@@ -219,7 +221,9 @@ public class NotesUser extends User {
       System.out.printf("[Note User] request complete update user=%s\n ", requests.email);
     }
   }
-
+  /**
+   * Gets all notes given a user id.
+   * */
   class NotesActionHeads implements Action {
     @Override
     public void execute() {
@@ -233,7 +237,9 @@ public class NotesUser extends User {
       System.out.printf("[Note User] request complete heads from user=%s\n ", requests.email);
     }
   }
-
+  /**
+   * Get a note given a note id.
+   * */
   class NotesActionRetrieve implements Action {
     @Override
     public void execute() {
@@ -245,7 +251,9 @@ public class NotesUser extends User {
       System.out.printf("[Note User] request complete retrieve from user=%s\n ", requests.email);
     }
   }
-
+  /**
+   * Marks a note deleted, shows up in "deleted" notes.
+   * */
   class NotesActionDelete implements Action {
     @Override
     public void execute(){
