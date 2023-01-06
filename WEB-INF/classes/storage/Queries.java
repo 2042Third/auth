@@ -8,11 +8,11 @@ package storage;
 public class Queries {
         public static String q_userinfo_reg = "select name, email, creation from userinfo where register_key = ?";
         public static String q_userinfo_login = "select "
-                + "u.name name, u.email email, u.creation creation, u.registered registered, s.key sess "
+                + "u.name name, u.email email, u.creation creation, u.registered registered "
                 + "from userinfo u "
                 + "where "
 //                + "s.userid = u.id "
-                + "and u.email = ? "
+                + "u.email = ? "
                 + "and u.spw = ? "
                 + ";";
         public static String u_userinfo_sess = "insert into sessions (userid, key, sessip ) "

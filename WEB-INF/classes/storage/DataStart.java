@@ -135,8 +135,8 @@ public class DataStart {
       String query = Queries.u_userinfo_sess;
       PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
       stat.setString(1, u.sess);
-      stat.setString(2, u.email);
-      stat.setString(3, u.userIP); // added 1/5/23, should track the logged-in user's device/network
+      stat.setString(2, u.userIP); // added 1/5/23, should track the logged-in user's device/network
+      stat.setString(3, u.email);
       stat.executeUpdate(); // added 7/17/22, this didn't exist and caused a user to not have generated session keys.
       return;
     } catch (Exception e) {
