@@ -114,7 +114,8 @@ public class DataStart {
   /**
    * Deletes existing user sessions with the given email, and
    * update with a new session key.
-   * 
+   * When deleting the existing session keys, the other signed in session
+   * on the same device will be forced off.
    * @param uemail user email
    * @param upass  user password
    * @return a ResultSet with user name, email, account creation time,
@@ -126,17 +127,17 @@ public class DataStart {
       // Delete existing session key
       String query_delete_existing = Queries.u_userinfo_sess_delete_existing;
       PreparedStatement qde = Objects.requireNonNull(prepare_statement(query_delete_existing));
-//      PreparedStatement qde = con.prepareStatement(query_delete_existing);
       qde.setString(1, u.email);
+      qde.setString(2, u.userIP); // added 1/5/23, should track the logged-in user's device/network
       qde.executeUpdate(); // Could be changed to log user session key changes, but I shouldn't.
 
       // Insert new session key
       String query = Queries.u_userinfo_sess;
       PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
-//      PreparedStatement stat = con.prepareStatement(query);
       stat.setString(1, u.sess);
       stat.setString(2, u.email);
-      stat.executeUpdate(); // added 7/17, this didn't exist and caused a user to not have generated session keys.
+      stat.setString(3, u.userIP); // added 1/5/23, should track the logged-in user's device/network
+      stat.executeUpdate(); // added 7/17/22, this didn't exist and caused a user to not have generated session keys.
       return;
     } catch (Exception e) {
       e.printStackTrace();

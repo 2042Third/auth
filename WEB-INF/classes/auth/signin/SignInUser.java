@@ -27,11 +27,13 @@ public class SignInUser extends User {
    * Respondes the user of the signin with the session key for next actions
    *
    */
-  protected Boolean respond_user_with_sess() {
+  protected Boolean respond_user_with_sess(String userip) {
     userinfo_.status = "success";
     if (userinfo_.pass.length()>0){
       String sess = Codes.sess_rand_upw(userinfo_.pass); // generates the session key
       userinfo_.sess = sess;
+      userinfo_.userIP = userip;
+      System.out.printf("[Auth SignIn] User signin, %s, session ip \"%s\".\n",userinfo_.email,userinfo_.userIP);
       DataStart.u_userinfo_sess(userinfo_);
       userinfo_ = auserinfo_;
       userinfo_.sess = sess; // updates the latest userinfo with the new session key
@@ -45,7 +47,7 @@ public class SignInUser extends User {
    * database; respondes accordingly to the outcome of the query.
    * 
    */
-  public void check_login() {
+  public void check_login(String userip) {
     if (userinfo_.pass.equals("") || userinfo_.email.equals("") || userinfo_.pass.equals("test")
         || userinfo_.email.equals("test")) {
       System.out.println("[Auth SignIn] " + date.getTime() + "");
@@ -58,7 +60,7 @@ public class SignInUser extends User {
         System.out.printf("[Auth SignIn] Registered user \"%s\" sign in\n", auserinfo_.name);
 
 
-        respond_user_with_sess();
+        respond_user_with_sess(userip);
       } else {
         System.out.printf("[Auth SignIn] Unregistered user \"%s\" sign in\n", auserinfo_.name);
         userinfo_.statusInfo = "unregistered_user";

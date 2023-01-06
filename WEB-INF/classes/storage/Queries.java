@@ -9,23 +9,24 @@ public class Queries {
         public static String q_userinfo_reg = "select name, email, creation from userinfo where register_key = ?";
         public static String q_userinfo_login = "select "
                 + "u.name name, u.email email, u.creation creation, u.registered registered, s.key sess "
-                + "from userinfo u, sessions s "
+                + "from userinfo u "
                 + "where "
-                + "s.userid = u.id "
+//                + "s.userid = u.id "
                 + "and u.email = ? "
                 + "and u.spw = ? "
                 + ";";
-        public static String u_userinfo_sess = "insert into sessions (userid, key) "
-                + "select u.id , ?  from "
+        public static String u_userinfo_sess = "insert into sessions (userid, key, sessip ) "
+                + "select u.id , ?, ?  from "
                 + "userinfo u "
                 + " where u.email = ? "
                 + " ;";
         public static String u_userinfo_sess_delete_existing = "delete from sessions "
                 + " where userid in "
-                + "( "
-                + "select id from userinfo u "
-                + "where u.email = ? "
+                + " ( "
+                + " select id from userinfo u "
+                + "   where u.email = ? "
                 + " ) "
+                + " and sessip = ?"
                 + " ;";
         public static String u_userinfo_reg = "update userinfo set registered = ? where email = ?;";
         public static String q_userinfo_check = "select 1 from userinfo where email = lower(?);";

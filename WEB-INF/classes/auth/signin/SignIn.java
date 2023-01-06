@@ -16,12 +16,10 @@ public class SignIn extends HttpServlet {
     // Convert byte array into string
     String data = read_stream(request.getInputStream());
     System.out.printf("Incoming data: %s\n",data);
-    System.out.printf("Incoming ip (getRemoteAddr()): %s\n",request.getRemoteAddr());
-    System.out.printf("Incoming host (getRemoteHost()): %s\n",request.getRemoteHost());
-    System.out.printf("Incoming port (getRemotePort()): %d\n",request.getRemotePort());
 
     usr.parse_json(data);
-    usr.check_login();
+    // Gets the user ip addr and port number for session key
+    usr.check_login(request.getRemoteAddr()+":"+request.getRemotePort());
   }
 
   private String read_stream(InputStream stream) throws IOException {
