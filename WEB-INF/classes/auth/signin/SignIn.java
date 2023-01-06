@@ -15,7 +15,7 @@ public class SignIn extends HttpServlet {
     System.out.println("Data read from the file: ");
     // Convert byte array into string
     String data = read_stream(request.getInputStream());
-    System.out.printf("Incoming data: %s",data);
+    System.out.printf("Incoming data: %s\n",data);
     System.out.printf("Incoming ip (getRemoteAddr()): %s\n",request.getRemoteAddr());
     System.out.printf("Incoming host (getRemoteHost()): %s\n",request.getRemoteHost());
     System.out.printf("Incoming port (getRemotePort()): %d\n",request.getRemotePort());
