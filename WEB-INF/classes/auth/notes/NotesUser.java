@@ -33,7 +33,7 @@ public class NotesUser extends User {
     requests.ntype = (String) json_data.get("ntype");
     requests.head = (String) json_data.get("head");
     requests.username = (String) json_data.get("username");
-    requests.unencrypted_hash = (String) json_data.get("h");
+    requests.unencrypted_hash = (String) json_data.get("h"); // hash
   }
 
   /**
