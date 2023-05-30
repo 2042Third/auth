@@ -268,7 +268,7 @@ public class DataStart {
     String query = Queries.u_notes_update;
     PreparedStatement stat = Objects.requireNonNull(prepare_statement(query));
     stat.setString(1, n.content);
-    stat.setString(2, n.hash);
+    stat.setString(2, n.unencrypted_hash );
     stat.setString(3, SHA3.get_sha3(n.content));
     stat.setString(4, n.head);
     stat.setInt(5, Integer.parseInt(n.note_id));
