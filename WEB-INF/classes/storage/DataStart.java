@@ -14,10 +14,12 @@ import java.util.Objects;
 public class DataStart {
   private static String dbstorel = "jdbc:postgresql://localhost:5432/pdm";
   private static String dbstoren = "pdmsecurity";
-  private static String dbstorep = "16a93646e026f05c4b497e14c921d6b9915263aaa64663039dba8f13181f15e3";
+//  private static String dbstorep = "16a93646e026f05c4b497e14c921d6b9915263aaa64663039dba8f13181f15e3";
   private static String dbstored = "org.postgresql.Driver";
 
   private Connection con;
+
+
   /**
    * Returns a connection
    * @return connection object
@@ -30,6 +32,9 @@ public class DataStart {
       System.out.printf(" \"%s\" driver not found.\n", dbstored);
     }
     try {
+      String dbstorep= System.getenv("TOMCATVARDBPS");
+      System.out.printf("[web_notes storage] Environment variable \"%s\" found = \"%s\"", "TOMCATVARDBPS", dbstorep );
+
       return DriverManager.getConnection(
               dbstorel,
               dbstoren,
@@ -42,6 +47,9 @@ public class DataStart {
     catch (SQLException e) {
       e.printStackTrace();
       System.out.println("[web_notes storage] Sql exception!");
+    }
+    catch (Exception e) {
+      System.out.printf("[web_notes storage] Environment variable \"%s\" not found!", "TOMCATVARDBPS");
     }
     return null;
   }
