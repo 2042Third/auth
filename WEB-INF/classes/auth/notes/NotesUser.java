@@ -129,21 +129,24 @@ public class NotesUser extends User {
    * ==> n.content content, n.heading head, n.time time, n.h h, n.noteid noteid
    */
   private void get_note() {
-    ResultSet rs = DataStart.q_notes_get(requests);
+    get_note(requests);
+  }
+  private void get_note(note r) {
+    ResultSet rs = DataStart.q_notes_get(r);
     try {
       while (rs.next()) {
-        requests.content = rs.getString("content");
-        requests.head = rs.getString("head");
-        requests.time = rs.getString("time");
-        requests.update_time = rs.getString("update_time");
-        requests.unencrypted_hash = rs.getString("h");
-        requests.note_id = rs.getString("noteid");
+        r.content = rs.getString("content");
+        r.head = rs.getString("head");
+        r.time = rs.getString("time");
+        r.update_time = rs.getString("update_time");
+        r.unencrypted_hash = rs.getString("h");
+        r.note_id = rs.getString("noteid");
         System.out.printf("[Note User] query retrieve result: note_id's=%s\n",
-            requests.note_id);
+          r.note_id);
       }
     } catch (Exception e) {
       System.out.println("[Note User] SQL no result in query or failure happened ");
-      requests.status = "fail";
+      r.status = "fail";
     }
   }
   private note extract_time_return (ResultSet rs){
@@ -211,8 +214,16 @@ public class NotesUser extends User {
     public void execute() {
       try {
         process_note_update();
-      } catch (SQLException e) {
+      } catch (SQLException e) { // When it fails, return what the server has back to the user.
         requests.status = "fail";
+        note tmp_request = new note();
+        tmp_request.email = requests.email;
+        tmp_request.sess  = requests.sess;
+        tmp_request.note_id = requests.note_id;
+        tmp_request.ntype = "retrieve";
+        get_note(tmp_request);
+        requests.content = tmp_request.content;
+        requests.head = tmp_request.head;
         System.out.println("[Note User] Update failure, no action performed.");
         e.printStackTrace();
       }

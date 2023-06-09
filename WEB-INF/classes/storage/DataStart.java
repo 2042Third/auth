@@ -268,9 +268,7 @@ public class DataStart {
   /**
    * Updates a existing note, where the client has the id of the note
    *
-   * @param ucontent The content of the note
-   * @param uhash    Hash of the unencrypted note
-   * @param unoteid  ID of the note being updated
+   * @param n note object
    */
   public static ResultSet u_notes_update(note n) throws SQLException {
     String query = Queries.u_notes_update;
