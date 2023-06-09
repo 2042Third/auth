@@ -57,7 +57,7 @@ public class Queries {
                 + " and  s.userid = notes.userid "
                 + " and s.key = ?"
                 + " returning EXTRACT(EPOCH FROM notes.update_time) update_time"
-                + ", EXTRACT(EPOCH FROM notes.time) time;";
+                + ", EXTRACT(EPOCH FROM notes.time) AS time;";
         public static String u_notes_delete = "update notes "
                 + " set deleted = ? "
                 + ", update_time = CURRENT_TIMESTAMP "
