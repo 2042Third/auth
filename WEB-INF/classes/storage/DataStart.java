@@ -34,7 +34,6 @@ public class DataStart {
     try {
       String dbstorep= System.getenv("TOMCATVARDBPS");
       System.out.printf("[web_notes storage] Environment variable \"%s\" found = \"%s\"", "TOMCATVARDBPS", dbstorep );
-
       return DriverManager.getConnection(
               dbstorel,
               dbstoren,
